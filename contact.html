@@ -135,6 +135,69 @@
       linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
     background-size: 72px 72px;
   }
+
+  /* ── Contact Modal ── */
+  #contact-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: rgba(0, 0, 0, 0.68);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  #contact-modal-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+  #contact-modal {
+    transform: translateY(28px) scale(0.97);
+    transition: transform 0.38s cubic-bezier(0.34, 1.4, 0.64, 1);
+    max-height: 92vh;
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+  #contact-modal::-webkit-scrollbar { display: none; }
+  #contact-modal-overlay.open #contact-modal {
+    transform: translateY(0) scale(1);
+  }
+
+  /* form inputs */
+  .modal-input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 13px 16px;
+    color: #e5e2e1;
+    font-size: 14px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    outline: none;
+    transition: border-color 0.25s ease, background 0.25s ease;
+  }
+  .modal-input::placeholder { color: rgba(255, 255, 255, 0.22); }
+  .modal-input:focus {
+    border-color: rgba(216, 180, 254, 0.45);
+    background: rgba(255, 255, 255, 0.07);
+  }
+  textarea.modal-input {
+    resize: none;
+    line-height: 1.65;
+    min-height: 148px;
+  }
+
+  @keyframes checkPop {
+    0%   { transform: scale(0.6); opacity: 0; }
+    70%  { transform: scale(1.1); }
+    100% { transform: scale(1);   opacity: 1; }
+  }
+  .check-pop { animation: checkPop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
 </style>
 </head>
 <body class="bg-background text-on-background font-sans antialiased overflow-x-hidden min-h-screen flex flex-col">
@@ -152,10 +215,10 @@
       <a href="contact.html" class="font-sans tracking-widest uppercase text-[10px] font-semibold text-[#D8B4FE] border-b border-[#D8B4FE] pb-0.5">Contact</a>
     </nav>
     <div class="flex items-center gap-3">
-      <a href="mailto:colebowendesign@gmail.com"
-         class="font-sans tracking-widest uppercase text-[10px] font-semibold text-[#D8B4FE] border border-[#D8B4FE]/35 px-5 py-2.5 rounded-full hover:bg-[#D8B4FE]/8 transition-all duration-400 hidden md:inline-flex items-center">
+      <button onclick="openModal()"
+         class="font-sans tracking-widest uppercase text-[10px] font-semibold text-[#D8B4FE] border border-[#D8B4FE]/35 px-5 py-2.5 rounded-full hover:bg-[#D8B4FE]/8 transition-all duration-400 hidden md:inline-flex items-center cursor-pointer">
         Inquire
-      </a>
+      </button>
       <button id="mobile-menu-btn" class="md:hidden text-white p-1" aria-label="Toggle menu">
         <span class="material-symbols-outlined" id="menu-icon">menu</span>
       </button>
@@ -165,9 +228,77 @@
   <div id="mobile-menu" class="flex-col items-center gap-6 glass-panel border-t border-white/10 py-8 w-full">
     <a href="work.html"    class="font-sans tracking-widest uppercase text-[11px] font-semibold text-white/60 hover:text-white transition-colors">Work</a>
     <a href="contact.html" class="font-sans tracking-widest uppercase text-[11px] font-semibold text-[#D8B4FE]">Contact</a>
-    <a href="mailto:colebowendesign@gmail.com" class="font-sans tracking-widest uppercase text-[10px] font-semibold text-[#D8B4FE] border border-[#D8B4FE]/35 px-5 py-2.5 rounded-full">Inquire</a>
+    <button onclick="openModal(); document.getElementById('mobile-menu').classList.remove('open'); document.getElementById('menu-icon').textContent='menu';"
+       class="font-sans tracking-widest uppercase text-[10px] font-semibold text-[#D8B4FE] border border-[#D8B4FE]/35 px-5 py-2.5 rounded-full cursor-pointer">Inquire</button>
   </div>
 </header>
+
+<!-- ── CONTACT MODAL ── -->
+<div id="contact-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-heading">
+  <div id="contact-modal" class="glass-panel rounded-2xl w-full max-w-[520px] p-9 relative">
+
+    <!-- close button -->
+    <button onclick="closeModal()" aria-label="Close"
+            class="absolute top-5 right-5 w-9 h-9 flex items-center justify-center rounded-full border border-white/10 text-white/40 hover:text-white hover:border-white/30 transition-all duration-200 cursor-pointer">
+      <span class="material-symbols-outlined text-[18px]">close</span>
+    </button>
+
+    <!-- form view -->
+    <div id="form-view">
+      <p class="font-sans text-[9px] tracking-widest uppercase text-[#D8B4FE]/60 font-semibold mb-3">New Inquiry</p>
+      <h2 id="modal-heading" class="text-[28px] sm:text-[32px] font-light leading-[1.15] text-white mb-2">Let&rsquo;s Create<br/>Something.</h2>
+      <p class="text-[14px] text-on-surface-variant mb-7 leading-relaxed">Describe your project and I&rsquo;ll get back to you within 24 hours.</p>
+
+      <form id="contact-form" class="flex flex-col gap-4" novalidate>
+
+        <!-- name -->
+        <div class="flex flex-col gap-1.5">
+          <label for="f-name" class="font-sans text-[9px] tracking-widest uppercase text-white/40 font-semibold">Name</label>
+          <input id="f-name" name="name" type="text" placeholder="Your name" autocomplete="name" class="modal-input" required/>
+        </div>
+
+        <!-- subject -->
+        <div class="flex flex-col gap-1.5">
+          <label for="f-subject" class="font-sans text-[9px] tracking-widest uppercase text-white/40 font-semibold">Subject</label>
+          <input id="f-subject" name="subject" type="text" placeholder="What's this about?" class="modal-input" required/>
+        </div>
+
+        <!-- message -->
+        <div class="flex flex-col gap-1.5">
+          <label for="f-message" class="font-sans text-[9px] tracking-widest uppercase text-white/40 font-semibold">Message</label>
+          <textarea id="f-message" name="message" placeholder="Tell me about your project — the vision, the brand, the timeline, the budget…" class="modal-input" required></textarea>
+        </div>
+
+        <!-- error message -->
+        <p id="form-error" class="hidden text-[12px] text-[#ffb4ab] font-sans font-semibold -mt-1"></p>
+
+        <!-- send -->
+        <button type="submit" id="send-btn"
+                class="email-cta mt-1 w-full inline-flex items-center justify-center gap-3 bg-gradient-to-r from-primary to-primary-container text-on-primary-fixed font-sans text-[11px] font-semibold tracking-widest uppercase px-10 py-4 rounded-full transition-all duration-300 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed">
+          <span class="material-symbols-outlined text-[17px]" style="font-variation-settings:'FILL' 1" id="btn-icon">send</span>
+          <span id="btn-label">Send Message</span>
+        </button>
+
+      </form>
+    </div>
+
+    <!-- success view -->
+    <div id="success-view" class="hidden text-center py-6">
+      <div class="w-[68px] h-[68px] mx-auto mb-5 rounded-full bg-[#D8B4FE]/10 border border-[#D8B4FE]/25 flex items-center justify-center check-pop">
+        <span class="material-symbols-outlined text-[34px] text-[#D8B4FE]" style="font-variation-settings:'FILL' 1">check_circle</span>
+      </div>
+      <h3 class="text-[24px] font-light text-white mb-2.5">Message Sent</h3>
+      <p class="text-[14px] text-on-surface-variant leading-relaxed max-w-[280px] mx-auto">
+        Thank you for reaching out. I&rsquo;ll review your inquiry and be in touch shortly.
+      </p>
+      <button onclick="closeModal()"
+              class="mt-8 font-sans text-[10px] tracking-widest uppercase text-white/35 hover:text-white/70 transition-colors duration-200 font-semibold cursor-pointer">
+        Close
+      </button>
+    </div>
+
+  </div>
+</div>
 
 <!-- ── MAIN ── -->
 <main class="flex-grow relative z-10 flex flex-col items-center justify-center pt-[120px] pb-24 px-6 md:px-12 max-w-[1280px] mx-auto w-full">
@@ -185,12 +316,12 @@
 
   <!-- primary email CTA -->
   <div class="mb-20 fade-in-up d2">
-    <a href="mailto:colebowendesign@gmail.com"
-       class="email-cta inline-flex items-center gap-3 bg-gradient-to-r from-primary to-primary-container text-on-primary-fixed font-sans text-[11px] font-semibold tracking-widest uppercase px-10 py-4 rounded-full transition-all duration-300">
+    <button onclick="openModal()"
+       class="email-cta inline-flex items-center gap-3 bg-gradient-to-r from-primary to-primary-container text-on-primary-fixed font-sans text-[11px] font-semibold tracking-widest uppercase px-10 py-4 rounded-full transition-all duration-300 cursor-pointer">
       <span class="material-symbols-outlined text-[18px]" style="font-variation-settings:'FILL' 1">mail</span>
       Send Me an Email
       <span class="material-symbols-outlined text-[17px]" style="font-variation-settings:'FILL' 1">arrow_forward</span>
-    </a>
+    </button>
     <p class="text-center mt-3 font-sans text-[11px] tracking-wide text-white/30">colebowendesign@gmail.com</p>
   </div>
 
@@ -208,9 +339,9 @@
       </div>
     </div>
 
-    <!-- email -->
-    <a href="mailto:colebowendesign@gmail.com"
-       class="glass-panel-light rounded-xl p-7 flex flex-col gap-4 info-card group">
+    <!-- email — now opens modal -->
+    <button onclick="openModal()"
+       class="glass-panel-light rounded-xl p-7 flex flex-col gap-4 info-card group text-left cursor-pointer w-full">
       <div class="w-11 h-11 rounded-full bg-white/5 flex items-center justify-center border border-white/10 text-primary-container shrink-0 group-hover:border-[#D8B4FE]/40 transition-colors duration-300">
         <span class="material-symbols-outlined text-[22px]" style="font-variation-settings:'FILL' 0">mail</span>
       </div>
@@ -218,7 +349,7 @@
         <p class="font-sans text-[9px] tracking-[0.15em] uppercase text-on-surface-variant font-semibold mb-1.5">Email</p>
         <p class="text-[15px] font-medium text-white leading-snug break-all group-hover:text-[#D8B4FE] transition-colors duration-300">colebowendesign<br/>@gmail.com</p>
       </div>
-    </a>
+    </button>
 
     <!-- availability -->
     <div class="glass-panel-light rounded-xl p-7 flex flex-col gap-4 info-card">
@@ -270,12 +401,108 @@
 </footer>
 
 <script>
+  // ── Mobile menu ──
   const btn  = document.getElementById('mobile-menu-btn');
   const menu = document.getElementById('mobile-menu');
   const icon = document.getElementById('menu-icon');
   btn.addEventListener('click', () => {
     menu.classList.toggle('open');
     icon.textContent = menu.classList.contains('open') ? 'close' : 'menu';
+  });
+
+  // ── Contact Modal ──
+  // Get your free access key at web3forms.com — enter colebowendesign@gmail.com and copy the key here.
+  const WEB3FORMS_KEY = 'd8c314e2-ac99-4ac2-96d9-8524d97fab29';
+
+  const overlay = document.getElementById('contact-modal-overlay');
+
+  function openModal() {
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => document.getElementById('f-name').focus(), 350);
+  }
+
+  function closeModal() {
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+    setTimeout(resetModal, 320);
+  }
+
+  function resetModal() {
+    document.getElementById('contact-form').reset();
+    document.getElementById('form-view').classList.remove('hidden');
+    document.getElementById('success-view').classList.add('hidden');
+    document.getElementById('form-error').classList.add('hidden');
+    const btn = document.getElementById('send-btn');
+    btn.disabled = false;
+    document.getElementById('btn-label').textContent = 'Send Message';
+    document.getElementById('btn-icon').textContent = 'send';
+  }
+
+  // close on backdrop click
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay) closeModal();
+  });
+
+  // close on Escape
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && overlay.classList.contains('open')) closeModal();
+  });
+
+  // form submission
+  document.getElementById('contact-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const name    = document.getElementById('f-name').value.trim();
+    const subject = document.getElementById('f-subject').value.trim();
+    const message = document.getElementById('f-message').value.trim();
+    const errEl   = document.getElementById('form-error');
+
+    if (!name || !subject || !message) {
+      errEl.textContent = 'Please fill in all fields before sending.';
+      errEl.classList.remove('hidden');
+      return;
+    }
+    errEl.classList.add('hidden');
+
+    const sendBtn = document.getElementById('send-btn');
+    sendBtn.disabled = true;
+    document.getElementById('btn-label').textContent = 'Sending…';
+    document.getElementById('btn-icon').textContent = 'hourglass_top';
+
+    const body = new FormData();
+    body.append('access_key', WEB3FORMS_KEY);
+    body.append('name',       name);
+    body.append('subject',    subject);
+    body.append('message',    message);
+    body.append('from_name',  name);
+    body.append('replyto',    '');
+
+    try {
+      const res  = await fetch('https://api.web3forms.com/submit', { method: 'POST', body });
+      const data = await res.json();
+
+      if (data.success) {
+        document.getElementById('form-view').classList.add('hidden');
+        document.getElementById('success-view').classList.remove('hidden');
+        document.getElementById('success-view').querySelector('.check-pop').style.animation = 'none';
+        requestAnimationFrame(() => {
+          document.getElementById('success-view').querySelector('.check-pop').style.animation = '';
+        });
+      } else {
+        errEl.textContent = 'Something went wrong — please try again.';
+        errEl.classList.remove('hidden');
+        sendBtn.disabled = false;
+        document.getElementById('btn-label').textContent = 'Try Again';
+        document.getElementById('btn-icon').textContent = 'send';
+      }
+    } catch (_) {
+      errEl.textContent = 'Network error — check your connection and try again.';
+      errEl.classList.remove('hidden');
+      sendBtn.disabled = false;
+      document.getElementById('btn-label').textContent = 'Try Again';
+      document.getElementById('btn-icon').textContent = 'send';
+    }
   });
 </script>
 </body>
