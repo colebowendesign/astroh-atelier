@@ -148,7 +148,7 @@
   #mobile-menu { display: none; }
   #mobile-menu.open { display: flex; }
 
-  #cosmos { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+  #cosmos { position: fixed; top: 0; left: 0; pointer-events: none; z-index: 0; }
 </style>
 </head>
 <body class="bg-background text-on-background font-sans antialiased overflow-x-hidden min-h-screen flex flex-col selection:bg-primary-container selection:text-on-primary-fixed">
@@ -444,29 +444,33 @@
   // ── Cosmic background ──
   (function () {
     var canvas = document.getElementById('cosmos');
+    if (!canvas) return;
     var ctx = canvas.getContext('2d');
-    var W, H, stars = [], tick = 0;
+    var W, H, dpr = 1, stars = [], tick = 0;
 
     var NEBULAE = [
-      { rx: 0.18, ry: 0.22, rr: 0.68, col: '139,92,246',  a: 0.050 },
-      { rx: 0.80, ry: 0.62, rr: 0.52, col: '59,130,246',  a: 0.040 },
-      { rx: 0.50, ry: 0.08, rr: 0.58, col: '216,180,254', a: 0.055 },
-      { rx: 0.88, ry: 0.18, rr: 0.36, col: '99,102,241',  a: 0.034 },
-      { rx: 0.28, ry: 0.82, rr: 0.42, col: '168,85,247',  a: 0.030 },
+      { rx: 0.15, ry: 0.22, rr: 0.72, col: '110,50,210',  a: 0.14 },
+      { rx: 0.82, ry: 0.60, rr: 0.58, col: '40,70,200',   a: 0.11 },
+      { rx: 0.50, ry: 0.06, rr: 0.62, col: '170,100,255', a: 0.15 },
+      { rx: 0.88, ry: 0.18, rr: 0.38, col: '80,50,200',   a: 0.09 },
+      { rx: 0.28, ry: 0.82, rr: 0.45, col: '130,55,220',  a: 0.08 },
     ];
 
-    var PALETTE = ['255,255,255', '220,230,255', '200,215,255', '236,215,255'];
+    var PALETTE = ['255,255,255', '215,225,255', '195,210,255', '230,210,255'];
 
     function mkStar() {
       var t = Math.random(), r, baseA, twinkle = false, glow = false, speed, phase;
-      if (t < 0.65) {
-        r = Math.random() * 0.45 + 0.15; baseA = Math.random() * 0.45 + 0.15;
-      } else if (t < 0.90) {
-        r = Math.random() * 0.65 + 0.4; baseA = Math.random() * 0.45 + 0.3;
-        twinkle = true; speed = Math.random() * 0.018 + 0.006; phase = Math.random() * 6.28;
+      if (t < 0.58) {
+        r = Math.random() * 0.9 + 0.5;
+        baseA = Math.random() * 0.55 + 0.25;
+      } else if (t < 0.87) {
+        r = Math.random() * 1.1 + 0.8;
+        baseA = Math.random() * 0.45 + 0.40;
+        twinkle = true; speed = Math.random() * 0.02 + 0.006; phase = Math.random() * 6.28;
       } else {
-        r = Math.random() * 1.3 + 0.7; baseA = Math.random() * 0.35 + 0.55;
-        twinkle = true; glow = true; speed = Math.random() * 0.025 + 0.008; phase = Math.random() * 6.28;
+        r = Math.random() * 1.6 + 1.3;
+        baseA = Math.random() * 0.30 + 0.65;
+        twinkle = true; glow = true; speed = Math.random() * 0.03 + 0.008; phase = Math.random() * 6.28;
       }
       return { x: Math.random() * W, y: Math.random() * H, r: r, baseA: baseA,
                twinkle: twinkle, glow: glow, speed: speed, phase: phase,
@@ -474,17 +478,23 @@
     }
 
     function resize() {
-      W = canvas.width  = window.innerWidth;
-      H = canvas.height = window.innerHeight;
+      dpr = window.devicePixelRatio || 1;
+      W = window.innerWidth;
+      H = window.innerHeight;
+      canvas.width  = Math.round(W * dpr);
+      canvas.height = Math.round(H * dpr);
+      canvas.style.width  = W + 'px';
+      canvas.style.height = H + 'px';
     }
 
     function init() {
       stars = [];
-      var n = Math.min(Math.floor(W * H / 2800), 380);
+      var n = Math.min(Math.floor(W * H / 1800), 550);
       for (var i = 0; i < n; i++) stars.push(mkStar());
     }
 
     function draw() {
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, W, H);
       ctx.fillStyle = '#131313';
       ctx.fillRect(0, 0, W, H);
@@ -492,17 +502,18 @@
       NEBULAE.forEach(function (n) {
         var x = n.rx * W, y = n.ry * H, r = n.rr * Math.max(W, H);
         var g = ctx.createRadialGradient(x, y, 0, x, y, r);
-        g.addColorStop(0, 'rgba(' + n.col + ',' + n.a + ')');
-        g.addColorStop(1, 'rgba(0,0,0,0)');
+        g.addColorStop(0,   'rgba(' + n.col + ',' + n.a + ')');
+        g.addColorStop(0.5, 'rgba(' + n.col + ',' + (n.a * 0.35) + ')');
+        g.addColorStop(1,   'rgba(0,0,0,0)');
         ctx.fillStyle = g;
         ctx.fillRect(0, 0, W, H);
       });
 
       ctx.save();
       stars.forEach(function (s) {
-        var a = s.twinkle ? s.baseA * (0.55 + 0.45 * Math.sin(tick * s.speed + s.phase)) : s.baseA;
+        var a = s.twinkle ? s.baseA * (0.5 + 0.5 * Math.sin(tick * s.speed + s.phase)) : s.baseA;
         ctx.globalAlpha = Math.max(0, Math.min(1, a));
-        if (s.glow) { ctx.shadowBlur = 10; ctx.shadowColor = 'rgba(' + s.col + ',0.9)'; }
+        if (s.glow) { ctx.shadowBlur = 14; ctx.shadowColor = 'rgba(' + s.col + ',1)'; }
         ctx.fillStyle = 'rgb(' + s.col + ')';
         ctx.beginPath();
         ctx.arc(s.x, s.y, s.r, 0, 6.2832);
