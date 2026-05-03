@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ASTROH ATELIER | Selected Work</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "secondary-fixed": "#e0e0ff",
+          "primary-container": "#d8b4fe",
+          "inverse-surface": "#e5e2e1",
+          "background": "#131313",
+          "on-background": "#e5e2e1",
+          "on-surface-variant": "#cdc3d0",
+          "on-secondary-container": "#a8afff",
+          "secondary": "#bdc2ff",
+          "inverse-on-surface": "#313030",
+          "on-primary-fixed": "#29074a",
+          "on-tertiary": "#213145",
+          "on-error-container": "#ffdad6",
+          "surface-container-high": "#2a2a2a",
+          "error-container": "#93000a",
+          "error": "#ffb4ab",
+          "on-tertiary-fixed": "#0b1c30",
+          "tertiary-container": "#b4c4de",
+          "on-secondary-fixed-variant": "#2f3aa3",
+          "on-error": "#690005",
+          "primary-fixed-dim": "#dbb8ff",
+          "on-surface": "#e5e2e1",
+          "surface": "#131313",
+          "on-tertiary-fixed-variant": "#38485d",
+          "on-primary-container": "#604283",
+          "secondary-container": "#2f3aa3",
+          "inverse-primary": "#6f5092",
+          "on-secondary": "#131e8c",
+          "primary": "#ecd7ff",
+          "surface-tint": "#dbb8ff",
+          "tertiary-fixed": "#d3e4fe",
+          "on-tertiary-container": "#415167",
+          "surface-container-low": "#1c1b1b",
+          "tertiary-fixed-dim": "#b7c8e1",
+          "surface-dim": "#131313",
+          "primary-fixed": "#efdbff",
+          "outline-variant": "#4a454f",
+          "on-secondary-fixed": "#000767",
+          "surface-bright": "#3a3939",
+          "surface-container-lowest": "#0e0e0e",
+          "tertiary": "#cfe0fa",
+          "secondary-fixed-dim": "#bdc2ff",
+          "outline": "#968e9a",
+          "surface-variant": "#353534",
+          "surface-container-highest": "#353534",
+          "on-primary-fixed-variant": "#573878",
+          "on-primary": "#3f2160",
+          "surface-container": "#201f1f"
+        },
+        borderRadius: {
+          "DEFAULT": "0.25rem",
+          "lg": "0.5rem",
+          "xl": "0.75rem",
+          "full": "9999px"
+        },
+        spacing: {
+          "margin-desktop": "48px",
+          "gutter": "24px",
+          "margin-mobile": "16px",
+          "container-max": "1280px",
+          "unit": "8px"
+        },
+        fontFamily: {
+          "sans": ["Plus Jakarta Sans", "sans-serif"],
+          "display": ["Plus Jakarta Sans", "sans-serif"]
+        },
+        fontSize: {
+          "display": ["64px", { lineHeight: "1.1", letterSpacing: "-0.02em", fontWeight: "300" }],
+          "h1": ["48px", { lineHeight: "1.2", letterSpacing: "-0.01em", fontWeight: "400" }],
+          "h2": ["32px", { lineHeight: "1.3", letterSpacing: "0.01em", fontWeight: "500" }],
+          "h3": ["24px", { lineHeight: "1.4", letterSpacing: "0.02em", fontWeight: "500" }],
+          "body-lg": ["18px", { lineHeight: "1.6", letterSpacing: "0.015em", fontWeight: "400" }],
+          "body-md": ["16px", { lineHeight: "1.6", letterSpacing: "0.015em", fontWeight: "400" }],
+          "label-sm": ["12px", { lineHeight: "1", letterSpacing: "0.08em", fontWeight: "600" }]
+        }
+      }
+    }
+  }
+</script>
+<style>
+  .glass-panel {
+    background: rgba(19, 19, 19, 0.72);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* scroll-reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.75s ease, transform 0.75s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.22s; }
+  .reveal-delay-3 { transition-delay: 0.34s; }
+  .reveal-delay-4 { transition-delay: 0.46s; }
+
+  /* project card hover glow */
+  .project-card {
+    transition: box-shadow 0.5s ease, transform 0.5s ease;
+  }
+  .project-card:hover {
+    box-shadow: 0 0 40px rgba(236, 215, 255, 0.12);
+    transform: translateY(-4px);
+  }
+
+  /* image zoom on card hover */
+  .project-card:hover .card-media {
+    transform: scale(1.05);
+  }
+  .card-media {
+    transition: transform 0.7s ease;
+  }
+
+  /* video preview */
+  .project-video { object-fit: cover; width: 100%; height: 100%; }
+
+  /* color swatch */
+  .color-swatch {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255,255,255,0.15);
+    display: inline-block;
+    flex-shrink: 0;
+  }
+
+  /* mobile menu */
+  #mobile-menu { display: none; }
+  #mobile-menu.open { display: flex; }
+</style>
+</head>
+<body class="bg-background text-on-background font-sans antialiased overflow-x-hidden min-h-screen flex flex-col selection:bg-primary-container selection:text-on-primary-fixed">
+
+<!-- background atmosphere -->
+<div class="fixed inset-0 pointer-events-none z-0">
+  <div class="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,rgba(216,180,254,0.055)_0%,transparent_60%)]"></div>
+</div>
+
+<!-- ── NAV ── -->
+<header class="fixed top-0 w-full z-50 left-0">
+  <div class="max-w-[1280px] mx-auto px-6 md:px-12 py-5 flex justify-between items-center glass-panel border-b border-white/10 shadow-[0_0_24px_rgba(216,180,254,0.08)]">
+    <a href="index.html" class="text-xl font-light tracking-[0.22em] text-white select-none">ASTROH ATELIER</a>
+    <nav class="hidden md:flex items-center gap-8">
+      <a href="work.html"    class="font-sans tracking-widest uppercase text-[10px] font-semibold text-[#D8B4FE] border-b border-[#D8B4FE] pb-0.5">Work</a>
+      <a href="contact.html" class="font-sans tracking-widest uppercase text-[10px] font-semibold text-white/55 hover:text-white transition-colors duration-300 px-3 py-2 rounded hover:bg-white/5">Contact</a>
+    </nav>
+    <div class="flex items-center gap-3">
+      <a href="contact.html" class="font-sans tracking-widest uppercase text-[10px] font-semibold bg-gradient-to-r from-primary to-primary-container text-on-primary-fixed px-5 py-2.5 rounded-full hover:shadow-[0_0_16px_rgba(236,215,255,0.3)] transition-all duration-300 hidden md:inline-flex items-center gap-2">
+        Inquire
+        <span class="material-symbols-outlined text-[14px]" style="font-variation-settings:'FILL' 1">arrow_forward</span>
+      </a>
+      <button id="mobile-menu-btn" class="md:hidden text-white p-1" aria-label="Toggle menu">
+        <span class="material-symbols-outlined" id="menu-icon">menu</span>
+      </button>
+    </div>
+  </div>
+  <!-- mobile dropdown -->
+  <div id="mobile-menu" class="flex-col items-center gap-6 glass-panel border-t border-white/10 py-8 w-full">
+    <a href="work.html"    class="font-sans tracking-widest uppercase text-[11px] font-semibold text-[#D8B4FE]">Work</a>
+    <a href="contact.html" class="font-sans tracking-widest uppercase text-[11px] font-semibold text-white/60 hover:text-white transition-colors">Contact</a>
+    <a href="contact.html" class="font-sans tracking-widest uppercase text-[10px] font-semibold bg-gradient-to-r from-primary to-primary-container text-on-primary-fixed px-5 py-2.5 rounded-full">Inquire</a>
+  </div>
+</header>
+
+<!-- ── MAIN ── -->
+<main class="flex-grow relative z-10 pt-[100px] pb-[120px] px-6 md:px-12 max-w-[1280px] mx-auto w-full">
+
+  <!-- section header -->
+  <header class="mb-20 mt-10 reveal">
+    <p class="font-sans text-[10px] tracking-widest uppercase text-[#D8B4FE]/70 mb-4 font-semibold">Portfolio</p>
+    <h1 class="text-[48px] sm:text-[64px] leading-[1.05] tracking-[-0.02em] font-light text-on-background mb-5">/ Selected Work</h1>
+    <p class="text-[17px] leading-[1.65] text-on-surface-variant max-w-xl">
+      A curated collection of digital experiences — each site purpose-built with scroll-driven animation, immersive aesthetics, and a distinct visual identity.
+    </p>
+  </header>
+
+  <!-- projects grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+    <!-- ── CARD 1: FADE AVENUE ── -->
+    <article class="glass-panel rounded-xl overflow-hidden project-card reveal reveal-delay-1">
+      <!-- media: video preview -->
+      <div class="h-[340px] w-full relative overflow-hidden bg-[#0a0a0a]">
+        <video autoplay muted loop playsinline poster="assets/fade-avenue.jpg" class="project-video card-media opacity-90">
+          <source src="assets/fade-avenue.mp4" type="video/mp4"/>
+        </video>
+        <!-- gradient overlay -->
+        <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent"></div>
+        <!-- video badge -->
+        <div class="absolute top-4 right-4 glass-panel rounded-full px-3 py-1 flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[13px] text-[#C6993F]" style="font-variation-settings:'FILL' 1">play_circle</span>
+          <span class="font-sans text-[9px] tracking-widest uppercase text-white/60 font-semibold">Video Preview</span>
+        </div>
+      </div>
+
+      <!-- card body -->
+      <div class="p-8">
+        <!-- type + year -->
+        <div class="flex items-center justify-between mb-4">
+          <div class="inline-flex items-center gap-2 glass-panel rounded-full px-3 py-1">
+            <span class="w-1.5 h-1.5 rounded-full animate-pulse" style="background:#C6993F;box-shadow:0 0 6px #C6993F88;"></span>
+            <span class="font-sans text-[9px] tracking-widest uppercase text-white/50 font-semibold">Luxury Barbershop &amp; Beauty</span>
+          </div>
+          <span class="font-sans text-[9px] tracking-widest uppercase text-white/25 font-semibold">2025</span>
+        </div>
+
+        <h2 class="text-[28px] leading-[1.2] font-medium text-on-background mb-3">Fade Avenue</h2>
+
+        <p class="text-[15px] leading-[1.65] text-on-surface-variant mb-6">
+          A luxury barber &amp; beauty salon in Hattiesburg, MS. The site pairs deep black with warm gold and deploys a scroll-driven video animation that transforms the hero into a full cinematic journey. Glassmorphic panels, custom loaders, and GSAP-powered transitions reinforce every detail of the premium brand experience.
+        </p>
+
+        <!-- color palette -->
+        <div class="flex items-center gap-2 mb-5">
+          <span class="font-sans text-[9px] tracking-widest uppercase text-white/30 font-semibold mr-1">Palette</span>
+          <span class="color-swatch" style="background:#000000;" title="Midnight Black"></span>
+          <span class="color-swatch" style="background:#C6993F;" title="Warm Gold"></span>
+          <span class="color-swatch" style="background:#1a1a1a;" title="Near Black"></span>
+        </div>
+
+        <!-- tags -->
+        <div class="flex flex-wrap gap-2 mb-7">
+          <span class="glass-panel rounded-full px-3 py-1 font-sans text-[9px] tracking-widest uppercase text-white/40 font-semibold">Scroll Animation</span>
+          <span class="glass-panel rounded-full px-3 py-1 font-sans text-[9px] tracking-widest uppercase text-white/40 font-semibold">GSAP</span>
+          <span class="glass-panel rounded-full px-3 py-1 font-sans text-[9px] tracking-widest uppercase text-white/40 font-semibold">Dark Luxury</span>
+          <span class="glass-panel rounded-full px-3 py-1 font-sans text-[9px] tracking-widest uppercase text-white/40 font-semibold">Glassmorphism</span>
+        </div>
+
+        <!-- CTA -->
+        <a href="https://fade-avenue.vercel.app" target="_blank" rel="noopener noreferrer"
+           class="inline-flex items-center gap-2 font-sans text-[10px] tracking-widest uppercase font-semibold text-[#D8B4FE] border border-[#D8B4FE]/30 px-5 py-2.5 rounded-full hover:bg-[#D8B4FE]/8 transition-all duration-300">
+          View Live Site
+          <span class="material-symbols-outlined text-[14px]" style="font-variation-settings:'FILL' 1">open_in_new</span>
+        </a>
+      </div>
+    </article>
+
+    <!-- ── CARD 2: JERRY'S AUTOMOTIVE ── (offset down on md+) -->
+    <article class="glass-panel rounded-xl overflow-hidden project-card reveal reveal-delay-2 md:mt-20">
+      <!-- media: screenshot -->
+      <div class="h-[340px] w-full relative overflow-hidden bg-[#0d0d0d]">
+        <img src="assets/jerrys-automotive.jpg"
+             alt="Jerry's Automotive website screenshot"
+             class="w-full h-full object-cover card-media opacity-85"/>
+        <div class="absolute inset-0 bg-gradient-to-t from-[#0d0d0d] via-transparent to-transparent"></div>
+      </div>
+
+      <div class="p-8">
+        <div class="flex items-center justify-between mb-4">
+          <div class="inline-flex items-center gap-2 glass-panel rounded-full px-3 py-1">
+            <span class="w-1.5 h-1.5 rounded-full animate-pulse" style="background:#9C0000;box-shadow:0 0 6px #9C000088;"></span>
+            <span class="font-sans text-[9px] tracking-widest uppercase text-white/50 font-semibold">Auto Repair &amp; Service</span>
+          </div>
+          <span class="font-sans text-[9px] tracking-widest uppercase text-white/25 font-semibold">2025</span>
+        </div>
+
+        <h2 class="text-[28px] leading-[1.2] font-medium text-on-background mb-3">Jerry&apos;s Automotive</h2>
+
+        <p class="text-[15px] leading-[1.65] text-on-surface-variant mb-6">
+          A long-standing family automotive shop in Hattiesburg, MS, presented with industrial gravitas. Deep crimson accents layer over near-black surfaces with a subtle checker-floor motif that nods to the shop's roots. A full 10-member staff showcase and scroll-animated hero communicate decades of community trust.
+        </p>
+
+        <!-- color palette -->
+        <div class="flex items-center gap-2 mb-5">
+          <span class="font-sans text-[9px] tracking-widest uppercase text-white/30 font-semibold mr-1">Palette</span>
+          <span class="color-swatch" style="background:#1a1a1a;" title="Deep Dark"></span>
+          <span class="color-swatch" style="background:#9C0000;" title="Crimson Red"></span>
+          <span class="color-swatch" style="background:#CC2200;" title="Engine Red"></span>
+        </div>
+
+        <!-- tags -->
+        <div class="flex flex-wrap gap-2 mb-7">
+          <span class="glass-panel rounded-full px-3 py-1 font-sans text-[9px] tracking-widest uppercase text-white/40 font-semibold">Team Showcase</span>
+          <span class="glass-panel rounded-full px-3 py-1 font-sans text-[9px] tracking-widest uppercase text-white/40 font-semibold">Industrial</span>
+          <span class="glass-panel rounded-full px-3 py-1 font-sans text-[9px] tracking-widest uppercase text-white/40 font-semibold">Scroll Animation</span>
+          <span class="glass-panel rounded-full px-3 py-1 font-sans text-[9px] tracking-widest uppercase text-white/40 font-semibold">Starscape BG</span>
+        </div>
+
+        <a href="https://jerrys-automotive.vercel.app" target="_blank" rel="noopener noreferrer"
+           class="inline-flex items-center gap-2 font-sans text-[10px] tracking-widest uppercase font-semibold text-[#D8B4FE] border border-[#D8B4FE]/30 px-5 py-2.5 rounded-full hover:bg-[#D8B4FE]/8 transition-all duration-300">
+          View Live Site
+          <span class="material-symbols-outlined text-[14px]" style="font-variation-settings:'FILL' 1">open_in_new</span>
+        </a>
+      </div>
+    </article>
+
+    <!-- ── CARD 3: THE CRAB HOUSE ── -->
+    <article class="glass-panel rounded-xl overflow-hidden project-card reveal reveal-delay-3">
+      <div class="h-[340px] w-full relative overflow-hidden" style="background:#0c1612;">
+        <img src="assets/crab-house.jpg"
+             alt="The Crab House website screenshot"
+             class="w-full h-full object-cover card-media opacity-85"/>
+        <div class="absolute inset-0 bg-gradient-to-t from-[#0c1612] via-transparent to-transparent"></div>
+      </div>
+
+      <div class="p-8">
+        <div class="flex items-center justify-between mb-4">
+          <div class="inline-flex items-center gap-2 glass-panel rounded-full px-3 py-1">
+            <span class="w-1.5 h-1.5 rounded-full animate-pulse" style="background:#DE3021;box-shadow:0 0 6px #DE302188;"></span>
+            <span class="font-sans text-[9px] tracking-widest uppercase text-white/50 font-semibold">Cajun Seafood Restaurant</span>
+          </div>
+          <span class="font-sans text-[9px] tracking-widest uppercase text-white/25 font-semibold">2025</span>
+        </div>
+
+        <h2 class="text-[28px] leading-[1.2] font-medium text-on-background mb-3">The Crab House</h2>
+
+        <p class="text-[15px] leading-[1.65] text-on-surface-variant mb-6">
+          A vibrant Cajun seafood and hot wings restaurant in Hattiesburg, MS. Vivid crimson against a deep seafoam base creates a palette as bold as the food. Animated starscapes, a glassmorphic navbar with backdrop blur, and scroll-triggered section reveals bring the Cajun spirit into an immersive digital experience.
+        </p>
+
+        <!-- color palette -->
+        <div class="flex items-center gap-2 mb-5">
+          <span class="font-sans text-[9px] tracking-widest uppercase text-white/30 font-semibold mr-1">Palette</span>
+          <span class="color-swatch" style="background:#15201d;" title="Deep Seafoam"></span>
+          <span class="color-swatch" style="background:#DE3021;" title="Vivid Crimson"></span>
+          <span class="color-swatch" style="background:#ff6b55;" title="Hot Coral"></span>
+        </div>
+
+        <!-- tags -->
+        <div class="flex flex-wrap gap-2 mb-7">
+          <span class="glass-panel rounded-full px-3 py-1 font-sans text-[9px] tracking-widest uppercase text-white/40 font-semibold">Bold Palette</span>
+          <span class="glass-panel rounded-full px-3 py-1 font-sans text-[9px] tracking-widest uppercase text-white/40 font-semibold">Starscape BG</span>
+          <span class="glass-panel rounded-full px-3 py-1 font-sans text-[9px] tracking-widest uppercase text-white/40 font-semibold">Scroll Animation</span>
+          <span class="glass-panel rounded-full px-3 py-1 font-sans text-[9px] tracking-widest uppercase text-white/40 font-semibold">Glassmorphic Nav</span>
+        </div>
+
+        <a href="https://the-crab-house.vercel.app" target="_blank" rel="noopener noreferrer"
+           class="inline-flex items-center gap-2 font-sans text-[10px] tracking-widest uppercase font-semibold text-[#D8B4FE] border border-[#D8B4FE]/30 px-5 py-2.5 rounded-full hover:bg-[#D8B4FE]/8 transition-all duration-300">
+          View Live Site
+          <span class="material-symbols-outlined text-[14px]" style="font-variation-settings:'FILL' 1">open_in_new</span>
+        </a>
+      </div>
+    </article>
+
+    <!-- ── CARD 4: OEC JAPANESE EXPRESS ── (offset down on md+) -->
+    <article class="glass-panel rounded-xl overflow-hidden project-card reveal reveal-delay-4 md:mt-20">
+      <div class="h-[340px] w-full relative overflow-hidden bg-[#f5f5f7]">
+        <img src="assets/oec-japanese.jpg"
+             alt="OEC Japanese Express website screenshot"
+             class="w-full h-full object-cover card-media opacity-90"/>
+        <div class="absolute inset-0 bg-gradient-to-t from-[#1d1d1f] via-transparent to-transparent"></div>
+      </div>
+
+      <div class="p-8">
+        <div class="flex items-center justify-between mb-4">
+          <div class="inline-flex items-center gap-2 glass-panel rounded-full px-3 py-1">
+            <span class="w-1.5 h-1.5 rounded-full animate-pulse" style="background:#F4BB1D;box-shadow:0 0 6px #F4BB1D88;"></span>
+            <span class="font-sans text-[9px] tracking-widest uppercase text-white/50 font-semibold">Japanese Restaurant</span>
+          </div>
+          <span class="font-sans text-[9px] tracking-widest uppercase text-white/25 font-semibold">2025</span>
+        </div>
+
+        <h2 class="text-[28px] leading-[1.2] font-medium text-on-background mb-3">OEC Japanese Express</h2>
+
+        <p class="text-[15px] leading-[1.65] text-on-surface-variant mb-6">
+          A clean, premium website for a hibachi &amp; sushi restaurant in Hattiesburg, MS. A minimal white-and-gold aesthetic centers around a canvas-powered scroll animation that advances sushi photography frame-by-frame as users scroll — creating the signature scroll-stop effect. A custom chopstick cursor adds a playful, brand-coherent finishing touch.
+        </p>
+
+        <!-- color palette -->
+        <div class="flex items-center gap-2 mb-5">
+          <span class="font-sans text-[9px] tracking-widest uppercase text-white/30 font-semibold mr-1">Palette</span>
+          <span class="color-swatch" style="background:#ffffff;border-color:rgba(255,255,255,0.3);" title="White"></span>
+          <span class="color-swatch" style="background:#F4BB1D;" title="Gold"></span>
+          <span class="color-swatch" style="background:#1d1d1f;" title="Charcoal"></span>
+        </div>
+
+        <!-- tags -->
+        <div class="flex flex-wrap gap-2 mb-7">
+          <span class="glass-panel rounded-full px-3 py-1 font-sans text-[9px] tracking-widest uppercase text-white/40 font-semibold">Canvas Animation</span>
+          <span class="glass-panel rounded-full px-3 py-1 font-sans text-[9px] tracking-widest uppercase text-white/40 font-semibold">Scroll-Stop</span>
+          <span class="glass-panel rounded-full px-3 py-1 font-sans text-[9px] tracking-widest uppercase text-white/40 font-semibold">Minimal Premium</span>
+          <span class="glass-panel rounded-full px-3 py-1 font-sans text-[9px] tracking-widest uppercase text-white/40 font-semibold">Custom Cursor</span>
+        </div>
+
+        <a href="https://oec-japanese-express.vercel.app" target="_blank" rel="noopener noreferrer"
+           class="inline-flex items-center gap-2 font-sans text-[10px] tracking-widest uppercase font-semibold text-[#D8B4FE] border border-[#D8B4FE]/30 px-5 py-2.5 rounded-full hover:bg-[#D8B4FE]/8 transition-all duration-300">
+          View Live Site
+          <span class="material-symbols-outlined text-[14px]" style="font-variation-settings:'FILL' 1">open_in_new</span>
+        </a>
+      </div>
+    </article>
+
+  </div><!-- /grid -->
+
+  <!-- ── CTA STRIP ── -->
+  <div class="mt-28 text-center reveal">
+    <p class="font-sans text-[10px] tracking-widest uppercase text-white/30 font-semibold mb-4">Ready to build something?</p>
+    <a href="contact.html"
+       class="inline-flex items-center gap-3 bg-gradient-to-r from-primary to-primary-container text-on-primary-fixed font-sans text-[11px] font-semibold tracking-widest uppercase px-10 py-4 rounded-full hover:shadow-[0_0_28px_rgba(236,215,255,0.3)] transition-all duration-300">
+      Start a Project
+      <span class="material-symbols-outlined text-[17px]" style="font-variation-settings:'FILL' 1">arrow_forward</span>
+    </a>
+  </div>
+
+</main><!-- /main -->
+
+<!-- ── FOOTER ── -->
+<footer class="w-full py-14 border-t border-white/5 relative z-10">
+  <div class="max-w-[1280px] mx-auto px-6 md:px-12 flex flex-col md:flex-row justify-between items-center gap-6">
+    <div class="text-base font-light tracking-widest text-white/30">ASTROH ATELIER</div>
+    <div class="flex gap-8">
+      <a href="#" class="font-sans text-[10px] tracking-widest uppercase text-white/30 hover:text-white/70 transition-colors duration-300">Instagram</a>
+      <a href="#" class="font-sans text-[10px] tracking-widest uppercase text-white/30 hover:text-white/70 transition-colors duration-300">LinkedIn</a>
+    </div>
+    <p class="font-sans text-[10px] tracking-widest uppercase text-[#D8B4FE]/60">
+      &copy; 2026 ASTROH ATELIER. ALL RIGHTS RESERVED.
+    </p>
+  </div>
+</footer>
+
+<script>
+  // Mobile menu
+  const btn  = document.getElementById('mobile-menu-btn');
+  const menu = document.getElementById('mobile-menu');
+  const icon = document.getElementById('menu-icon');
+  btn.addEventListener('click', () => {
+    menu.classList.toggle('open');
+    icon.textContent = menu.classList.contains('open') ? 'close' : 'menu';
+  });
+
+  // Scroll-reveal via IntersectionObserver
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
