@@ -131,8 +131,9 @@
     transition: transform 0.7s ease;
   }
 
-  /* video preview */
-  .project-video { object-fit: cover; width: 100%; height: 100%; }
+  /* site scroll preview */
+  .site-preview-scaler { transform-origin: top left; }
+  .site-preview-scrollable { will-change: transform; }
 
   /* color swatch */
   .color-swatch {
@@ -199,17 +200,19 @@
 
     <!-- ── CARD 1: FADE AVENUE ── -->
     <article class="glass-panel rounded-xl overflow-hidden project-card reveal reveal-delay-1">
-      <!-- media: video preview -->
-      <div class="h-[340px] w-full relative overflow-hidden bg-[#0a0a0a]">
-        <video autoplay muted loop playsinline poster="assets/fade-avenue.jpg" class="project-video card-media opacity-90">
-          <source src="assets/fade-avenue.mp4" type="video/mp4"/>
-        </video>
-        <!-- gradient overlay -->
-        <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent"></div>
-        <!-- video badge -->
-        <div class="absolute top-4 right-4 glass-panel rounded-full px-3 py-1 flex items-center gap-1.5">
-          <span class="material-symbols-outlined text-[13px] text-[#C6993F]" style="font-variation-settings:'FILL' 1">play_circle</span>
-          <span class="font-sans text-[9px] tracking-widest uppercase text-white/60 font-semibold">Video Preview</span>
+      <!-- media: live site scroll preview -->
+      <div class="h-[340px] w-full relative overflow-hidden bg-[#0a0a0a] site-preview-card">
+        <div class="absolute inset-0 overflow-hidden">
+          <div class="site-preview-scaler absolute top-0 left-0">
+            <div class="site-preview-scrollable">
+              <iframe src="https://fade-avenue.vercel.app" style="width:1440px;height:3000px;border:none;display:block;pointer-events:none;" loading="lazy" title="Fade Avenue preview"></iframe>
+            </div>
+          </div>
+        </div>
+        <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent pointer-events-none"></div>
+        <div class="absolute top-4 right-4 glass-panel rounded-full px-3 py-1 flex items-center gap-1.5 z-10">
+          <span class="material-symbols-outlined text-[13px] text-[#C6993F]" style="font-variation-settings:'FILL' 1">travel_explore</span>
+          <span class="font-sans text-[9px] tracking-widest uppercase text-white/60 font-semibold">Live Preview</span>
         </div>
       </div>
 
@@ -257,15 +260,19 @@
 
     <!-- ── CARD 2: JERRY'S AUTOMOTIVE ── (offset down on md+) -->
     <article class="glass-panel rounded-xl overflow-hidden project-card reveal reveal-delay-2 md:mt-20">
-      <!-- media: video preview -->
-      <div class="h-[340px] w-full relative overflow-hidden bg-[#0d0d0d]">
-        <video autoplay muted loop playsinline poster="assets/jerrys-automotive.jpg" class="project-video card-media opacity-90">
-          <source src="assets/jerrys-automotive.mp4" type="video/mp4"/>
-        </video>
-        <div class="absolute inset-0 bg-gradient-to-t from-[#0d0d0d] via-transparent to-transparent"></div>
-        <div class="absolute top-4 right-4 glass-panel rounded-full px-3 py-1 flex items-center gap-1.5">
-          <span class="material-symbols-outlined text-[13px] text-[#9C0000]" style="font-variation-settings:'FILL' 1">play_circle</span>
-          <span class="font-sans text-[9px] tracking-widest uppercase text-white/60 font-semibold">Video Preview</span>
+      <!-- media: live site scroll preview -->
+      <div class="h-[340px] w-full relative overflow-hidden bg-[#0d0d0d] site-preview-card">
+        <div class="absolute inset-0 overflow-hidden">
+          <div class="site-preview-scaler absolute top-0 left-0">
+            <div class="site-preview-scrollable">
+              <iframe src="https://jerrys-automotive.vercel.app" style="width:1440px;height:3000px;border:none;display:block;pointer-events:none;" loading="lazy" title="Jerry's Automotive preview"></iframe>
+            </div>
+          </div>
+        </div>
+        <div class="absolute inset-0 bg-gradient-to-t from-[#0d0d0d] via-transparent to-transparent pointer-events-none"></div>
+        <div class="absolute top-4 right-4 glass-panel rounded-full px-3 py-1 flex items-center gap-1.5 z-10">
+          <span class="material-symbols-outlined text-[13px] text-[#9C0000]" style="font-variation-settings:'FILL' 1">travel_explore</span>
+          <span class="font-sans text-[9px] tracking-widest uppercase text-white/60 font-semibold">Live Preview</span>
         </div>
       </div>
 
@@ -310,14 +317,19 @@
 
     <!-- ── CARD 3: THE CRAB HOUSE ── -->
     <article class="glass-panel rounded-xl overflow-hidden project-card reveal reveal-delay-3">
-      <div class="h-[340px] w-full relative overflow-hidden" style="background:#0c1612;">
-        <video autoplay muted loop playsinline poster="assets/crab-house.jpg" class="project-video card-media opacity-90">
-          <source src="assets/crab-house.mp4" type="video/mp4"/>
-        </video>
-        <div class="absolute inset-0 bg-gradient-to-t from-[#0c1612] via-transparent to-transparent"></div>
-        <div class="absolute top-4 right-4 glass-panel rounded-full px-3 py-1 flex items-center gap-1.5">
-          <span class="material-symbols-outlined text-[13px] text-[#DE3021]" style="font-variation-settings:'FILL' 1">play_circle</span>
-          <span class="font-sans text-[9px] tracking-widest uppercase text-white/60 font-semibold">Video Preview</span>
+      <!-- media: live site scroll preview -->
+      <div class="h-[340px] w-full relative overflow-hidden site-preview-card" style="background:#0c1612;">
+        <div class="absolute inset-0 overflow-hidden">
+          <div class="site-preview-scaler absolute top-0 left-0">
+            <div class="site-preview-scrollable">
+              <iframe src="https://the-crab-house.vercel.app" style="width:1440px;height:3000px;border:none;display:block;pointer-events:none;" loading="lazy" title="The Crab House preview"></iframe>
+            </div>
+          </div>
+        </div>
+        <div class="absolute inset-0 bg-gradient-to-t from-[#0c1612] via-transparent to-transparent pointer-events-none"></div>
+        <div class="absolute top-4 right-4 glass-panel rounded-full px-3 py-1 flex items-center gap-1.5 z-10">
+          <span class="material-symbols-outlined text-[13px] text-[#DE3021]" style="font-variation-settings:'FILL' 1">travel_explore</span>
+          <span class="font-sans text-[9px] tracking-widest uppercase text-white/60 font-semibold">Live Preview</span>
         </div>
       </div>
 
@@ -362,14 +374,19 @@
 
     <!-- ── CARD 4: OEC JAPANESE EXPRESS ── (offset down on md+) -->
     <article class="glass-panel rounded-xl overflow-hidden project-card reveal reveal-delay-4 md:mt-20">
-      <div class="h-[340px] w-full relative overflow-hidden bg-[#f5f5f7]">
-        <video autoplay muted loop playsinline poster="assets/oec-japanese.jpg" class="project-video card-media opacity-90">
-          <source src="assets/oec-japanese.mp4" type="video/mp4"/>
-        </video>
-        <div class="absolute inset-0 bg-gradient-to-t from-[#1d1d1f] via-transparent to-transparent"></div>
-        <div class="absolute top-4 right-4 glass-panel rounded-full px-3 py-1 flex items-center gap-1.5">
-          <span class="material-symbols-outlined text-[13px] text-[#F4BB1D]" style="font-variation-settings:'FILL' 1">play_circle</span>
-          <span class="font-sans text-[9px] tracking-widest uppercase text-white/60 font-semibold">Video Preview</span>
+      <!-- media: live site scroll preview -->
+      <div class="h-[340px] w-full relative overflow-hidden bg-[#f5f5f7] site-preview-card">
+        <div class="absolute inset-0 overflow-hidden">
+          <div class="site-preview-scaler absolute top-0 left-0">
+            <div class="site-preview-scrollable">
+              <iframe src="https://oec-japanese-express.vercel.app" style="width:1440px;height:3000px;border:none;display:block;pointer-events:none;" loading="lazy" title="OEC Japanese Express preview"></iframe>
+            </div>
+          </div>
+        </div>
+        <div class="absolute inset-0 bg-gradient-to-t from-[#1d1d1f] via-transparent to-transparent pointer-events-none"></div>
+        <div class="absolute top-4 right-4 glass-panel rounded-full px-3 py-1 flex items-center gap-1.5 z-10">
+          <span class="material-symbols-outlined text-[13px] text-[#F4BB1D]" style="font-variation-settings:'FILL' 1">travel_explore</span>
+          <span class="font-sans text-[9px] tracking-widest uppercase text-white/60 font-semibold">Live Preview</span>
         </div>
       </div>
 
@@ -552,6 +569,56 @@
     });
   }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
   reveals.forEach(el => observer.observe(el));
+
+  // ── Site scroll preview animations ──
+  (function () {
+    var IFRAME_W  = 1440;
+    var IFRAME_H  = 3000;
+    var CARD_H    = 340;
+    var SPEED     = 1.4;   // viewport px per frame (~84 vp-px/s → ~10 s sweep)
+    var PAUSE_MS  = 2800;  // pause at top and bottom before reversing
+
+    function setup(card) {
+      var scaler     = card.querySelector('.site-preview-scaler');
+      var scrollable = card.querySelector('.site-preview-scrollable');
+      if (!scaler || !scrollable) return;
+
+      var scale = 1, maxScroll = 0, pos = 0, dir = 1, pausing = false;
+
+      function recalc() {
+        scale     = card.offsetWidth / IFRAME_W;
+        maxScroll = IFRAME_H * scale - CARD_H;
+        if (maxScroll < 0) maxScroll = 0;
+        scaler.style.transform = 'scale(' + scale + ')';
+      }
+
+      function step() {
+        if (!pausing) {
+          pos += SPEED * dir;
+          if (pos >= maxScroll) {
+            pos = maxScroll;
+            pausing = true;
+            setTimeout(function () { dir = -1; pausing = false; }, PAUSE_MS);
+          } else if (pos <= 0) {
+            pos = 0;
+            pausing = true;
+            setTimeout(function () { dir = 1; pausing = false; }, PAUSE_MS);
+          }
+          scrollable.style.transform = 'translateY(' + (-(pos / scale)) + 'px)';
+        }
+        requestAnimationFrame(step);
+      }
+
+      recalc();
+      window.addEventListener('resize', recalc);
+      // Stagger start so all four cards don't move in sync
+      var delay = Array.prototype.indexOf.call(
+        document.querySelectorAll('.site-preview-card'), card) * 1800;
+      setTimeout(step, delay);
+    }
+
+    document.querySelectorAll('.site-preview-card').forEach(setup);
+  })();
 </script>
 </body>
 </html>
