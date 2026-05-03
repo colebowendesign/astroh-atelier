@@ -441,93 +441,102 @@
 </footer>
 
 <script>
-  // ── Cosmic background ──
+  // ── Aurora background ──
   (function () {
     var canvas = document.getElementById('cosmos');
     if (!canvas) return;
-    var ctx = canvas.getContext('2d');
-    var W, H, dpr = 1, stars = [], tick = 0;
+    var gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+    if (!gl) return;
 
-    var NEBULAE = [
-      { rx: 0.15, ry: 0.22, rr: 0.72, col: '110,50,210',  a: 0.14 },
-      { rx: 0.82, ry: 0.60, rr: 0.58, col: '40,70,200',   a: 0.11 },
-      { rx: 0.50, ry: 0.06, rr: 0.62, col: '170,100,255', a: 0.15 },
-      { rx: 0.88, ry: 0.18, rr: 0.38, col: '80,50,200',   a: 0.09 },
-      { rx: 0.28, ry: 0.82, rr: 0.45, col: '130,55,220',  a: 0.08 },
-    ];
-
-    var PALETTE = ['255,255,255', '215,225,255', '195,210,255', '230,210,255'];
-
-    function mkStar() {
-      var t = Math.random(), r, baseA, twinkle = false, glow = false, speed, phase;
-      if (t < 0.58) {
-        r = Math.random() * 0.9 + 0.5;
-        baseA = Math.random() * 0.55 + 0.25;
-      } else if (t < 0.87) {
-        r = Math.random() * 1.1 + 0.8;
-        baseA = Math.random() * 0.45 + 0.40;
-        twinkle = true; speed = Math.random() * 0.02 + 0.006; phase = Math.random() * 6.28;
-      } else {
-        r = Math.random() * 1.6 + 1.3;
-        baseA = Math.random() * 0.30 + 0.65;
-        twinkle = true; glow = true; speed = Math.random() * 0.03 + 0.008; phase = Math.random() * 6.28;
-      }
-      return { x: Math.random() * W, y: Math.random() * H, r: r, baseA: baseA,
-               twinkle: twinkle, glow: glow, speed: speed, phase: phase,
-               col: PALETTE[Math.floor(Math.random() * PALETTE.length)] };
-    }
+    var uRes, uTime, dpr = Math.min(window.devicePixelRatio || 1, 1.5);
 
     function resize() {
-      dpr = window.devicePixelRatio || 1;
-      W = window.innerWidth;
-      H = window.innerHeight;
+      var W = window.innerWidth, H = window.innerHeight;
       canvas.width  = Math.round(W * dpr);
       canvas.height = Math.round(H * dpr);
       canvas.style.width  = W + 'px';
       canvas.style.height = H + 'px';
+      gl.viewport(0, 0, canvas.width, canvas.height);
+      if (uRes) gl.uniform2f(uRes, canvas.width, canvas.height);
     }
 
-    function init() {
-      stars = [];
-      var n = Math.min(Math.floor(W * H / 1800), 550);
-      for (var i = 0; i < n; i++) stars.push(mkStar());
+    var vert = `attribute vec2 p; void main(){ gl_Position = vec4(p, 0.0, 1.0); }`;
+
+    var frag = `
+      precision highp float;
+      uniform float iTime;
+      uniform vec2 iResolution;
+      #define NO 3
+
+      float rand(vec2 n) { return fract(sin(dot(n, vec2(12.9898, 4.1414))) * 43758.5453); }
+
+      float noise(vec2 p) {
+        vec2 ip = floor(p), u = fract(p);
+        u = u * u * (3.0 - 2.0 * u);
+        float r = mix(mix(rand(ip), rand(ip + vec2(1.0, 0.0)), u.x),
+                      mix(rand(ip + vec2(0.0, 1.0)), rand(ip + vec2(1.0, 1.0)), u.x), u.y);
+        return r * r;
+      }
+
+      float fbm(vec2 x) {
+        float v = 0.0, a = 0.3;
+        vec2 shift = vec2(100.0);
+        mat2 rot = mat2(cos(0.5), sin(0.5), -sin(0.5), cos(0.5));
+        for (int i = 0; i < NO; i++) { v += a * noise(x); x = rot * x * 2.0 + shift; a *= 0.4; }
+        return v;
+      }
+
+      vec4 tnh(vec4 x) { vec4 e = exp(clamp(2.0 * x, -20.0, 20.0)); return (e - 1.0) / (e + 1.0); }
+
+      void main() {
+        vec2 shake = vec2(sin(iTime * 1.2) * 0.005, cos(iTime * 2.1) * 0.005);
+        vec2 p = ((gl_FragCoord.xy + shake * iResolution.xy) - iResolution.xy * 0.5)
+                 / iResolution.y * mat2(6.0, -4.0, 4.0, 6.0);
+        vec4 o = vec4(0.0);
+        float f = 2.0 + fbm(p + vec2(iTime * 5.0, 0.0)) * 0.5;
+        for (int i = 0; i < 35; i++) {
+          float fi = float(i);
+          vec2 v = p + cos(fi * fi + (iTime + p.x * 0.08) * 0.025 + fi * vec2(13.0, 11.0)) * 3.5
+                     + vec2(sin(iTime * 3.0 + fi) * 0.003, cos(iTime * 3.5 - fi) * 0.003);
+          float tn = fbm(v + vec2(iTime * 0.5, fi)) * 0.3 * (1.0 - fi / 35.0);
+          vec4 ac = vec4(0.1 + 0.3 * sin(fi * 0.2 + iTime * 0.4),
+                         0.3 + 0.5 * cos(fi * 0.3 + iTime * 0.5),
+                         0.7 + 0.3 * sin(fi * 0.4 + iTime * 0.3), 1.0);
+          float d = max(length(max(v, vec2(v.x * f * 0.015, v.y * 1.5))), 0.0001);
+          o += ac * exp(sin(fi * fi + iTime * 0.8)) / d * (1.0 + tn * 0.8)
+               * smoothstep(0.0, 1.0, fi / 35.0) * 0.6;
+        }
+        gl_FragColor = tnh(pow(max(o / 100.0, vec4(0.0)), vec4(1.6))) * 1.5
+                     + vec4(0.0745, 0.0745, 0.0745, 0.0);
+      }
+    `;
+
+    function mkShader(type, src) {
+      var s = gl.createShader(type);
+      gl.shaderSource(s, src); gl.compileShader(s); return s;
     }
 
-    function draw() {
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx.clearRect(0, 0, W, H);
-      ctx.fillStyle = '#131313';
-      ctx.fillRect(0, 0, W, H);
+    var prog = gl.createProgram();
+    gl.attachShader(prog, mkShader(gl.VERTEX_SHADER, vert));
+    gl.attachShader(prog, mkShader(gl.FRAGMENT_SHADER, frag));
+    gl.linkProgram(prog);
+    gl.useProgram(prog);
 
-      NEBULAE.forEach(function (n) {
-        var x = n.rx * W, y = n.ry * H, r = n.rr * Math.max(W, H);
-        var g = ctx.createRadialGradient(x, y, 0, x, y, r);
-        g.addColorStop(0,   'rgba(' + n.col + ',' + n.a + ')');
-        g.addColorStop(0.5, 'rgba(' + n.col + ',' + (n.a * 0.35) + ')');
-        g.addColorStop(1,   'rgba(0,0,0,0)');
-        ctx.fillStyle = g;
-        ctx.fillRect(0, 0, W, H);
-      });
+    var buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+    var ap = gl.getAttribLocation(prog, 'p');
+    gl.enableVertexAttribArray(ap);
+    gl.vertexAttribPointer(ap, 2, gl.FLOAT, false, 0, 0);
 
-      ctx.save();
-      stars.forEach(function (s) {
-        var a = s.twinkle ? s.baseA * (0.5 + 0.5 * Math.sin(tick * s.speed + s.phase)) : s.baseA;
-        ctx.globalAlpha = Math.max(0, Math.min(1, a));
-        if (s.glow) { ctx.shadowBlur = 14; ctx.shadowColor = 'rgba(' + s.col + ',1)'; }
-        ctx.fillStyle = 'rgb(' + s.col + ')';
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, s.r, 0, 6.2832);
-        ctx.fill();
-        if (s.glow) ctx.shadowBlur = 0;
-      });
-      ctx.restore();
+    uRes  = gl.getUniformLocation(prog, 'iResolution');
+    uTime = gl.getUniformLocation(prog, 'iTime');
 
-      tick++;
-      requestAnimationFrame(draw);
-    }
+    resize();
+    window.addEventListener('resize', resize);
 
-    window.addEventListener('resize', function () { resize(); init(); });
-    resize(); init(); draw();
+    var t = 0;
+    (function draw() { t += 0.016; gl.uniform1f(uTime, t); gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4); requestAnimationFrame(draw); })();
   })();
 </script>
 
