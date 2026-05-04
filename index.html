@@ -112,6 +112,50 @@
   /* mobile menu */
   #mobile-menu { display: none; }
   #mobile-menu.open { display: flex; }
+
+  /* ── REVIEWS MARQUEE ── */
+  @keyframes scrollLeft {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+  @keyframes scrollRight {
+    from { transform: translateX(-50%); }
+    to   { transform: translateX(0); }
+  }
+  .marquee-row { overflow: hidden; }
+  .marquee-inner { display: flex; width: max-content; }
+  .marquee-row[data-dir="left"]  .marquee-inner { animation: scrollLeft  50s linear infinite; }
+  .marquee-row[data-dir="right"] .marquee-inner { animation: scrollRight 58s linear infinite; }
+  .marquee-row:hover .marquee-inner { animation-play-state: paused; }
+
+  .review-card {
+    flex-shrink: 0;
+    width: 340px;
+    margin-right: 20px;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    background-color: rgba(19, 19, 19, 0.72);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(216, 180, 254, 0.12);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    cursor: default;
+  }
+  .review-card:hover {
+    border-color: rgba(216, 180, 254, 0.30);
+    box-shadow: 0 0 32px rgba(216, 180, 254, 0.09);
+  }
+
+  /* ── SCROLL REVEAL ── */
+  .review-reveal {
+    opacity: 0;
+    transform: translateY(22px);
+    transition: opacity 0.85s ease, transform 0.85s ease;
+  }
+  .review-reveal.r-vis {
+    opacity: 1;
+    transform: translateY(0);
+  }
 </style>
 </head>
 <body class="bg-background text-on-background font-sans antialiased overflow-x-hidden min-h-screen flex flex-col">
@@ -201,13 +245,295 @@
   </div>
 </section>
 
+<!-- ── REVIEWS ── -->
+<section class="relative z-10 py-24 md:py-36 overflow-hidden">
+
+  <!-- ambient glow -->
+  <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[960px] h-[600px] rounded-full"
+         style="background:radial-gradient(ellipse at center,rgba(216,180,254,0.055) 0%,transparent 72%)"></div>
+  </div>
+
+  <!-- header -->
+  <div class="max-w-[1280px] mx-auto px-6 md:px-12 mb-16 text-center">
+    <div class="review-reveal inline-flex items-center gap-3 mb-5" style="transition-delay:0s">
+      <div class="h-px w-8 bg-[#D8B4FE]/35"></div>
+      <span class="font-sans text-[9px] tracking-[0.22em] uppercase text-[#D8B4FE]/65 font-semibold">Client Testimonials</span>
+      <div class="h-px w-8 bg-[#D8B4FE]/35"></div>
+    </div>
+    <h2 class="review-reveal text-[34px] sm:text-[44px] leading-[1.15] tracking-[-0.025em] font-light text-on-surface mb-4" style="transition-delay:0.15s">
+      Trusted by brands who<br class="hidden sm:block"> care about craft.
+    </h2>
+    <p class="review-reveal text-[15px] leading-[1.7] text-on-surface-variant max-w-xs mx-auto" style="transition-delay:0.3s">
+      Every project is a partnership&thinsp;&mdash;&thinsp;here's what clients say.
+    </p>
+  </div>
+
+  <!-- marquee rows -->
+  <div class="relative">
+    <!-- fade masks -->
+    <div class="absolute inset-y-0 left-0 w-28 pointer-events-none z-10" style="background:linear-gradient(to right,#131313,transparent)"></div>
+    <div class="absolute inset-y-0 right-0 w-28 pointer-events-none z-10" style="background:linear-gradient(to left,#131313,transparent)"></div>
+
+    <!-- Row 1 → (7 cards × 2) -->
+    <div class="marquee-row mb-5" data-dir="left">
+      <div class="marquee-inner">
+
+        <article class="review-card">
+          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"Transformative work. Our site became something we're genuinely proud to share with every new client."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#A855F7,#7C3AED)">SH</div>
+            <div><div class="text-[13px] font-medium text-on-surface leading-tight">Sofia Hernandez</div><div class="text-[11px] text-on-surface-variant tracking-wide leading-tight mt-0.5">Founder, Maison Lumière</div></div>
+          </div>
+        </article>
+
+        <article class="review-card">
+          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"The cinematic attention to detail is unparalleled. Cole brought a level of craft we didn't think was achievable."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#3B82F6,#1D4ED8)">JW</div>
+            <div><div class="text-[13px] font-medium text-on-surface leading-tight">James Whitmore</div><div class="text-[11px] text-on-surface-variant tracking-wide leading-tight mt-0.5">Creative Director, Arcturus Studio</div></div>
+          </div>
+        </article>
+
+        <article class="review-card">
+          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"Every scroll and hover feels intentional. Our bounce rate dropped 40% after the redesign&thinsp;&mdash;&thinsp;remarkable."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#EC4899,#BE185D)">PN</div>
+            <div><div class="text-[13px] font-medium text-on-surface leading-tight">Priya Nair</div><div class="text-[11px] text-on-surface-variant tracking-wide leading-tight mt-0.5">CEO, Velour Collective</div></div>
+          </div>
+        </article>
+
+        <article class="review-card">
+          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"I came in wanting a simple site. I left with a luxury experience that closes deals. Worth every penny."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#F59E0B,#B45309)">MB</div>
+            <div><div class="text-[13px] font-medium text-on-surface leading-tight">Marcus Bell</div><div class="text-[11px] text-on-surface-variant tracking-wide leading-tight mt-0.5">Founder, Bell &amp; Co Advisory</div></div>
+          </div>
+        </article>
+
+        <article class="review-card">
+          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"Astroh Atelier doesn't just build websites&thinsp;&mdash;&thinsp;they build atmospheres. Ours is now truly unforgettable."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#14B8A6,#0F766E)">EF</div>
+            <div><div class="text-[13px] font-medium text-on-surface leading-tight">Élise Fontaine</div><div class="text-[11px] text-on-surface-variant tracking-wide leading-tight mt-0.5">Brand Director, Studio Nocturne</div></div>
+          </div>
+        </article>
+
+        <article class="review-card">
+          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"The scroll animations alone generated more social shares than any campaign we had previously run."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#22C55E,#15803D)">TP</div>
+            <div><div class="text-[13px] font-medium text-on-surface leading-tight">Theo Park</div><div class="text-[11px] text-on-surface-variant tracking-wide leading-tight mt-0.5">Marketing Lead, Vanta Labs</div></div>
+          </div>
+        </article>
+
+        <article class="review-card">
+          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"Professional, visionary, detail-oriented. The final product exceeded every expectation we had set."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#DB2777,#9D174D)">AV</div>
+            <div><div class="text-[13px] font-medium text-on-surface leading-tight">Anastasia Volkov</div><div class="text-[11px] text-on-surface-variant tracking-wide leading-tight mt-0.5">Co-Founder, Dusk Beauty</div></div>
+          </div>
+        </article>
+
+        <!-- duplicate set for seamless loop -->
+        <article class="review-card">
+          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"Transformative work. Our site became something we're genuinely proud to share with every new client."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#A855F7,#7C3AED)">SH</div>
+            <div><div class="text-[13px] font-medium text-on-surface leading-tight">Sofia Hernandez</div><div class="text-[11px] text-on-surface-variant tracking-wide leading-tight mt-0.5">Founder, Maison Lumière</div></div>
+          </div>
+        </article>
+
+        <article class="review-card">
+          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"The cinematic attention to detail is unparalleled. Cole brought a level of craft we didn't think was achievable."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#3B82F6,#1D4ED8)">JW</div>
+            <div><div class="text-[13px] font-medium text-on-surface leading-tight">James Whitmore</div><div class="text-[11px] text-on-surface-variant tracking-wide leading-tight mt-0.5">Creative Director, Arcturus Studio</div></div>
+          </div>
+        </article>
+
+        <article class="review-card">
+          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"Every scroll and hover feels intentional. Our bounce rate dropped 40% after the redesign&thinsp;&mdash;&thinsp;remarkable."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#EC4899,#BE185D)">PN</div>
+            <div><div class="text-[13px] font-medium text-on-surface leading-tight">Priya Nair</div><div class="text-[11px] text-on-surface-variant tracking-wide leading-tight mt-0.5">CEO, Velour Collective</div></div>
+          </div>
+        </article>
+
+        <article class="review-card">
+          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"I came in wanting a simple site. I left with a luxury experience that closes deals. Worth every penny."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#F59E0B,#B45309)">MB</div>
+            <div><div class="text-[13px] font-medium text-on-surface leading-tight">Marcus Bell</div><div class="text-[11px] text-on-surface-variant tracking-wide leading-tight mt-0.5">Founder, Bell &amp; Co Advisory</div></div>
+          </div>
+        </article>
+
+        <article class="review-card">
+          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"Astroh Atelier doesn't just build websites&thinsp;&mdash;&thinsp;they build atmospheres. Ours is now truly unforgettable."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#14B8A6,#0F766E)">EF</div>
+            <div><div class="text-[13px] font-medium text-on-surface leading-tight">Élise Fontaine</div><div class="text-[11px] text-on-surface-variant tracking-wide leading-tight mt-0.5">Brand Director, Studio Nocturne</div></div>
+          </div>
+        </article>
+
+        <article class="review-card">
+          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"The scroll animations alone generated more social shares than any campaign we had previously run."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#22C55E,#15803D)">TP</div>
+            <div><div class="text-[13px] font-medium text-on-surface leading-tight">Theo Park</div><div class="text-[11px] text-on-surface-variant tracking-wide leading-tight mt-0.5">Marketing Lead, Vanta Labs</div></div>
+          </div>
+        </article>
+
+        <article class="review-card">
+          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"Professional, visionary, detail-oriented. The final product exceeded every expectation we had set."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#DB2777,#9D174D)">AV</div>
+            <div><div class="text-[13px] font-medium text-on-surface leading-tight">Anastasia Volkov</div><div class="text-[11px] text-on-surface-variant tracking-wide leading-tight mt-0.5">Co-Founder, Dusk Beauty</div></div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+
+    <!-- Row 2 ← (6 cards × 2) -->
+    <div class="marquee-row" data-dir="right">
+      <div class="marquee-inner">
+
+        <article class="review-card">
+          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"Cole reimagined our entire digital identity. The site now feels like a world, not just a page."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#6366F1,#4338CA)">CR</div>
+            <div><div class="text-[13px] font-medium text-on-surface leading-tight">Callum Reid</div><div class="text-[11px] text-on-surface-variant tracking-wide leading-tight mt-0.5">Creative Principal, Helix Creative</div></div>
+          </div>
+        </article>
+
+        <article class="review-card">
+          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"The depth in every interaction is something our audience comments on constantly. Pure craft."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#EAB308,#A16207)">NO</div>
+            <div><div class="text-[13px] font-medium text-on-surface leading-tight">Nina Okafor</div><div class="text-[11px] text-on-surface-variant tracking-wide leading-tight mt-0.5">Director of Design, Luminos</div></div>
+          </div>
+        </article>
+
+        <article class="review-card">
+          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"We needed something that matched the quality of our work. Astroh Atelier delivered exactly that."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#10B981,#065F46)">DC</div>
+            <div><div class="text-[13px] font-medium text-on-surface leading-tight">David Chen</div><div class="text-[11px] text-on-surface-variant tracking-wide leading-tight mt-0.5">Founder, Meridian Films</div></div>
+          </div>
+        </article>
+
+        <article class="review-card">
+          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"Our conversion rate doubled. But more importantly, our brand finally looks as refined as it truly is."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#F472B6,#BE185D)">IT</div>
+            <div><div class="text-[13px] font-medium text-on-surface leading-tight">Isabel Torres</div><div class="text-[11px] text-on-surface-variant tracking-wide leading-tight mt-0.5">CMO, Solstice Brand</div></div>
+          </div>
+        </article>
+
+        <article class="review-card">
+          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"Working together felt collaborative from day one. They understood our vision before we did."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#0EA5E9,#0369A1)">PD</div>
+            <div><div class="text-[13px] font-medium text-on-surface leading-tight">Patrick Dunn</div><div class="text-[11px] text-on-surface-variant tracking-wide leading-tight mt-0.5">CEO, Nocturn Creative</div></div>
+          </div>
+        </article>
+
+        <article class="review-card">
+          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"I've worked with many designers. None have matched Cole's eye for motion and atmosphere."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#8B5CF6,#6D28D9)">YT</div>
+            <div><div class="text-[13px] font-medium text-on-surface leading-tight">Yuki Tanaka</div><div class="text-[11px] text-on-surface-variant tracking-wide leading-tight mt-0.5">Art Director, Kinetic Press</div></div>
+          </div>
+        </article>
+
+        <!-- duplicate set for seamless loop -->
+        <article class="review-card">
+          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"Cole reimagined our entire digital identity. The site now feels like a world, not just a page."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#6366F1,#4338CA)">CR</div>
+            <div><div class="text-[13px] font-medium text-on-surface leading-tight">Callum Reid</div><div class="text-[11px] text-on-surface-variant tracking-wide leading-tight mt-0.5">Creative Principal, Helix Creative</div></div>
+          </div>
+        </article>
+
+        <article class="review-card">
+          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"The depth in every interaction is something our audience comments on constantly. Pure craft."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#EAB308,#A16207)">NO</div>
+            <div><div class="text-[13px] font-medium text-on-surface leading-tight">Nina Okafor</div><div class="text-[11px] text-on-surface-variant tracking-wide leading-tight mt-0.5">Director of Design, Luminos</div></div>
+          </div>
+        </article>
+
+        <article class="review-card">
+          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"We needed something that matched the quality of our work. Astroh Atelier delivered exactly that."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#10B981,#065F46)">DC</div>
+            <div><div class="text-[13px] font-medium text-on-surface leading-tight">David Chen</div><div class="text-[11px] text-on-surface-variant tracking-wide leading-tight mt-0.5">Founder, Meridian Films</div></div>
+          </div>
+        </article>
+
+        <article class="review-card">
+          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"Our conversion rate doubled. But more importantly, our brand finally looks as refined as it truly is."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#F472B6,#BE185D)">IT</div>
+            <div><div class="text-[13px] font-medium text-on-surface leading-tight">Isabel Torres</div><div class="text-[11px] text-on-surface-variant tracking-wide leading-tight mt-0.5">CMO, Solstice Brand</div></div>
+          </div>
+        </article>
+
+        <article class="review-card">
+          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"Working together felt collaborative from day one. They understood our vision before we did."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#0EA5E9,#0369A1)">PD</div>
+            <div><div class="text-[13px] font-medium text-on-surface leading-tight">Patrick Dunn</div><div class="text-[11px] text-on-surface-variant tracking-wide leading-tight mt-0.5">CEO, Nocturn Creative</div></div>
+          </div>
+        </article>
+
+        <article class="review-card">
+          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"I've worked with many designers. None have matched Cole's eye for motion and atmosphere."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#8B5CF6,#6D28D9)">YT</div>
+            <div><div class="text-[13px] font-medium text-on-surface leading-tight">Yuki Tanaka</div><div class="text-[11px] text-on-surface-variant tracking-wide leading-tight mt-0.5">Art Director, Kinetic Press</div></div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </div>
+
+</section>
+
 <!-- ── FOOTER ── -->
 <footer class="w-full py-14 border-t border-white/5 relative z-10">
   <div class="max-w-[1280px] mx-auto px-6 md:px-12 flex flex-col md:flex-row justify-between items-center gap-6">
     <div class="text-base font-light tracking-widest text-white/30">ASTROH ATELIER</div>
     <div class="flex gap-8">
-      <a href="#" class="font-sans text-[10px] tracking-widest uppercase text-white/30 hover:text-white/70 transition-colors duration-300">Instagram</a>
-      <a href="#" class="font-sans text-[10px] tracking-widest uppercase text-white/30 hover:text-white/70 transition-colors duration-300">LinkedIn</a>
+      <a href="https://www.instagram.com/astrohatelier" target="_blank" rel="noopener noreferrer" class="font-sans text-[10px] tracking-widest uppercase text-white/30 hover:text-white/70 transition-colors duration-300">Instagram</a>
     </div>
     <p class="font-sans text-[10px] tracking-widest uppercase text-[#D8B4FE]/60">
       &copy; 2026 ASTROH ATELIER. ALL RIGHTS RESERVED.
@@ -216,6 +542,18 @@
 </footer>
 
 <script>
+  // review section scroll reveal
+  const revealEls = document.querySelectorAll('.review-reveal');
+  const revealObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('r-vis');
+        revealObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => revealObs.observe(el));
+
   const btn  = document.getElementById('mobile-menu-btn');
   const menu = document.getElementById('mobile-menu');
   const icon = document.getElementById('menu-icon');
