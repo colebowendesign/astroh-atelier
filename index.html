@@ -92,8 +92,39 @@
   }
 </script>
 <style>
+  /* ── THEME VARIABLES ── */
+  :root {
+    --acc: 216, 180, 254;
+    --acc-bright: 236, 215, 255;
+    --bg-hex: #131313;
+  }
+  body { background-color: var(--bg-hex, #131313) !important; }
+
+  /* Semantic accent helpers */
+  .r-acc       { color: rgb(var(--acc)); }
+  .r-acc-65    { color: rgba(var(--acc), 0.65); }
+  .r-acc-60    { color: rgba(var(--acc), 0.60); }
+  .r-acc-line  { background-color: rgba(var(--acc), 0.35); height: 1px; width: 2rem; flex-shrink: 0; }
+  .nav-glow    { box-shadow: 0 0 24px rgba(var(--acc), 0.08); }
+  .status-dot  { background-color: rgb(var(--acc-bright)); box-shadow: 0 0 8px rgba(var(--acc-bright), 0.7); }
+  .cta-grad    { background-image: linear-gradient(to right, rgb(var(--acc-bright)), rgb(var(--acc))); color: rgba(0,0,0,0.82); }
+  .cta-grad:hover { box-shadow: 0 0 24px rgba(var(--acc-bright), 0.35); }
+  .r-inquire {
+    color: rgb(var(--acc));
+    border: 1px solid rgba(var(--acc), 0.35);
+    border-radius: 9999px;
+    padding: 0.625rem 1.25rem;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: background-color 0.4s ease;
+  }
+  .r-inquire:hover { background-color: rgba(var(--acc), 0.08); }
+
   .glass-panel {
-    background-color: rgba(19, 19, 19, 0.72);
+    background-color: rgba(10, 10, 10, 0.78);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -134,16 +165,31 @@
     margin-right: 20px;
     padding: 1.5rem;
     border-radius: 0.75rem;
-    background-color: rgba(19, 19, 19, 0.72);
+    background-color: rgba(10, 10, 10, 0.80);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
-    border: 1px solid rgba(216, 180, 254, 0.12);
+    border: 1px solid rgba(var(--acc), 0.12);
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
     cursor: default;
   }
   .review-card:hover {
-    border-color: rgba(216, 180, 254, 0.30);
-    box-shadow: 0 0 32px rgba(216, 180, 254, 0.09);
+    border-color: rgba(var(--acc), 0.30);
+    box-shadow: 0 0 32px rgba(var(--acc), 0.09);
+  }
+
+  /* ── LOGO MARK ── */
+  .logo-img {
+    object-fit: contain;
+    flex-shrink: 0;
+    filter: drop-shadow(0 0 7px rgba(var(--acc), 0.75)) drop-shadow(0 0 18px rgba(var(--acc), 0.35));
+    transition: filter 0.5s ease;
+  }
+  .logo-hero {
+    object-fit: contain;
+    filter: drop-shadow(0 0 18px rgba(var(--acc), 0.9))
+            drop-shadow(0 0 48px rgba(var(--acc), 0.5))
+            drop-shadow(0 0 90px rgba(var(--acc), 0.25));
+    transition: filter 0.5s ease;
   }
 
   /* ── SCROLL REVEAL ── */
@@ -162,14 +208,17 @@
 
 <!-- ── NAV ── -->
 <header class="fixed top-0 w-full z-50 left-0">
-  <div class="max-w-[1280px] mx-auto px-6 md:px-12 py-5 flex justify-between items-center glass-panel border-b border-white/10 shadow-[0_0_24px_rgba(216,180,254,0.08)]">
-    <a href="index.html" class="text-xl font-light tracking-[0.22em] text-white select-none">ASTROH ATELIER</a>
+  <div class="max-w-[1280px] mx-auto px-6 md:px-12 py-5 flex justify-between items-center glass-panel border-b border-white/10 nav-glow">
+    <a href="index.html" class="flex items-center gap-3 select-none group">
+      <img src="assets/logo.png" alt="Astroh Atelier logo" class="logo-img group-hover:opacity-85 transition-opacity" style="height:38px;width:auto;">
+      <span class="text-xl font-light tracking-[0.22em] text-white">ASTROH ATELIER</span>
+    </a>
     <nav class="hidden md:flex items-center gap-8">
       <a href="work.html"    class="font-sans tracking-widest uppercase text-[10px] font-semibold text-white/55 hover:text-white transition-colors duration-300 px-3 py-2 rounded hover:bg-white/5">Work</a>
       <a href="contact.html" class="font-sans tracking-widest uppercase text-[10px] font-semibold text-white/55 hover:text-white transition-colors duration-300 px-3 py-2 rounded hover:bg-white/5">Contact</a>
     </nav>
     <div class="flex items-center gap-3">
-      <a href="contact.html" class="font-sans tracking-widest uppercase text-[10px] font-semibold text-[#D8B4FE] border border-[#D8B4FE]/35 px-5 py-2.5 rounded-full hover:bg-[#D8B4FE]/8 transition-all duration-400 hidden md:inline-flex items-center">
+      <a href="contact.html" class="r-inquire hidden md:inline-flex items-center">
         Inquire
       </a>
       <button id="mobile-menu-btn" class="md:hidden text-white p-1" aria-label="Toggle menu">
@@ -181,7 +230,7 @@
   <div id="mobile-menu" class="flex-col items-center gap-6 glass-panel border-t border-white/10 py-8 w-full">
     <a href="work.html"    class="font-sans tracking-widest uppercase text-[11px] font-semibold text-white/60 hover:text-white transition-colors">Work</a>
     <a href="contact.html" class="font-sans tracking-widest uppercase text-[11px] font-semibold text-white/60 hover:text-white transition-colors">Contact</a>
-    <a href="contact.html" class="font-sans tracking-widest uppercase text-[10px] font-semibold text-[#D8B4FE] border border-[#D8B4FE]/35 px-5 py-2.5 rounded-full">Inquire</a>
+    <a href="contact.html" class="r-inquire inline-flex">Inquire</a>
   </div>
 </header>
 
@@ -189,36 +238,39 @@
 <main class="flex-grow relative flex items-center justify-center min-h-screen overflow-hidden">
   <!-- video bg -->
   <div class="absolute inset-0 z-0">
-    <video autoplay muted loop playsinline class="object-cover w-full h-full opacity-55">
-      <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260429_115139_0fc6bd3d-3631-4d26-ab9b-28293887dcc9.mp4" type="video/mp4"/>
-    </video>
+    <video id="bg-video" autoplay muted loop playsinline class="object-cover w-full h-full opacity-55"></video>
     <!-- vignette -->
-    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_20%,#131313_80%)] pointer-events-none"></div>
-    <div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent pointer-events-none"></div>
+    <div id="vignette" class="absolute inset-0 pointer-events-none"></div>
+    <div id="fade-top" class="absolute inset-0 pointer-events-none"></div>
   </div>
 
   <!-- hero content -->
   <div class="relative z-10 text-center px-6 md:px-12 flex flex-col items-center max-w-[1280px] mx-auto pt-28">
 
     <!-- status pill -->
-    <div class="glass-panel px-5 py-2 rounded-full mb-8 inline-flex items-center gap-3 fade-in-up d1">
-      <span class="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_8px_rgba(236,215,255,0.7)]"></span>
+    <div class="glass-panel px-5 py-2 rounded-full mb-10 inline-flex items-center gap-3 fade-in-up d1">
+      <span class="w-2 h-2 rounded-full animate-pulse status-dot"></span>
       <span class="font-sans text-[10px] uppercase tracking-widest text-on-surface-variant font-semibold">Available for Projects</span>
     </div>
 
+    <!-- hero logo -->
+    <div class="mb-8 fade-in-up d2">
+      <img src="assets/logo.png" alt="Astroh Atelier" class="logo-hero mx-auto" style="height:130px;width:auto;">
+    </div>
+
     <!-- headline -->
-    <h1 class="text-[52px] sm:text-[64px] md:text-[80px] leading-[1.05] tracking-[-0.03em] font-light text-on-surface mb-6 fade-in-up d2">
+    <h1 class="text-[52px] sm:text-[64px] md:text-[80px] leading-[1.05] tracking-[-0.03em] font-light text-on-surface mb-6 fade-in-up d3">
       Web Designer
     </h1>
 
     <!-- subtext -->
-    <p class="text-[17px] sm:text-[18px] leading-[1.65] text-on-surface-variant max-w-xl mx-auto mb-12 fade-in-up d3">
+    <p class="text-[17px] sm:text-[18px] leading-[1.65] text-on-surface-variant max-w-xl mx-auto mb-12 fade-in-up d4">
       Crafting minimalist digital experiences — cinematic interactions, scroll-driven animation, and atmospheric depth for luxury and creative brands.
     </p>
 
     <!-- CTA row -->
-    <div class="flex flex-col sm:flex-row items-center gap-4 fade-in-up d4">
-      <a href="work.html" class="bg-gradient-to-r from-primary to-primary-container text-on-primary-fixed font-sans text-[11px] font-semibold tracking-widest uppercase px-8 py-4 rounded-full inline-flex items-center gap-2.5 hover:shadow-[0_0_24px_rgba(236,215,255,0.35)] transition-all duration-300">
+    <div class="flex flex-col sm:flex-row items-center gap-4 fade-in-up d5">
+      <a href="work.html" class="cta-grad font-sans text-[11px] font-semibold tracking-widest uppercase px-8 py-4 rounded-full inline-flex items-center gap-2.5 transition-all duration-300">
         View My Work
         <span class="material-symbols-outlined text-[17px]" style="font-variation-settings:'FILL' 1">arrow_forward</span>
       </a>
@@ -250,16 +302,15 @@
 
   <!-- ambient glow -->
   <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[960px] h-[600px] rounded-full"
-         style="background:radial-gradient(ellipse at center,rgba(216,180,254,0.055) 0%,transparent 72%)"></div>
+    <div id="ambient-glow" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[960px] h-[600px] rounded-full"></div>
   </div>
 
   <!-- header -->
   <div class="max-w-[1280px] mx-auto px-6 md:px-12 mb-16 text-center">
     <div class="review-reveal inline-flex items-center gap-3 mb-5" style="transition-delay:0s">
-      <div class="h-px w-8 bg-[#D8B4FE]/35"></div>
-      <span class="font-sans text-[9px] tracking-[0.22em] uppercase text-[#D8B4FE]/65 font-semibold">Client Testimonials</span>
-      <div class="h-px w-8 bg-[#D8B4FE]/35"></div>
+      <div class="r-acc-line"></div>
+      <span class="font-sans text-[9px] tracking-[0.22em] uppercase r-acc-65 font-semibold">Client Testimonials</span>
+      <div class="r-acc-line"></div>
     </div>
     <h2 class="review-reveal text-[34px] sm:text-[44px] leading-[1.15] tracking-[-0.025em] font-light text-on-surface mb-4" style="transition-delay:0.15s">
       Trusted by brands who<br class="hidden sm:block"> care about craft.
@@ -272,15 +323,15 @@
   <!-- marquee rows -->
   <div class="relative">
     <!-- fade masks -->
-    <div class="absolute inset-y-0 left-0 w-28 pointer-events-none z-10" style="background:linear-gradient(to right,#131313,transparent)"></div>
-    <div class="absolute inset-y-0 right-0 w-28 pointer-events-none z-10" style="background:linear-gradient(to left,#131313,transparent)"></div>
+    <div id="fade-left" class="absolute inset-y-0 left-0 w-28 pointer-events-none z-10"></div>
+    <div id="fade-right" class="absolute inset-y-0 right-0 w-28 pointer-events-none z-10"></div>
 
     <!-- Row 1 → (7 cards × 2) -->
     <div class="marquee-row mb-5" data-dir="left">
       <div class="marquee-inner">
 
         <article class="review-card">
-          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <div class="r-acc text-[11px] tracking-[4px] mb-4">★★★★★</div>
           <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"Transformative work. Our site became something we're genuinely proud to share with every new client."</p>
           <div class="flex items-center gap-3">
             <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#A855F7,#7C3AED)">SH</div>
@@ -289,7 +340,7 @@
         </article>
 
         <article class="review-card">
-          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <div class="r-acc text-[11px] tracking-[4px] mb-4">★★★★★</div>
           <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"The cinematic attention to detail is unparalleled. Cole brought a level of craft we didn't think was achievable."</p>
           <div class="flex items-center gap-3">
             <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#3B82F6,#1D4ED8)">JW</div>
@@ -298,7 +349,7 @@
         </article>
 
         <article class="review-card">
-          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <div class="r-acc text-[11px] tracking-[4px] mb-4">★★★★★</div>
           <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"Every scroll and hover feels intentional. Our bounce rate dropped 40% after the redesign&thinsp;&mdash;&thinsp;remarkable."</p>
           <div class="flex items-center gap-3">
             <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#EC4899,#BE185D)">PN</div>
@@ -307,7 +358,7 @@
         </article>
 
         <article class="review-card">
-          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <div class="r-acc text-[11px] tracking-[4px] mb-4">★★★★★</div>
           <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"I came in wanting a simple site. I left with a luxury experience that closes deals. Worth every penny."</p>
           <div class="flex items-center gap-3">
             <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#F59E0B,#B45309)">MB</div>
@@ -316,7 +367,7 @@
         </article>
 
         <article class="review-card">
-          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <div class="r-acc text-[11px] tracking-[4px] mb-4">★★★★★</div>
           <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"Astroh Atelier doesn't just build websites&thinsp;&mdash;&thinsp;they build atmospheres. Ours is now truly unforgettable."</p>
           <div class="flex items-center gap-3">
             <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#14B8A6,#0F766E)">EF</div>
@@ -325,7 +376,7 @@
         </article>
 
         <article class="review-card">
-          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <div class="r-acc text-[11px] tracking-[4px] mb-4">★★★★★</div>
           <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"The scroll animations alone generated more social shares than any campaign we had previously run."</p>
           <div class="flex items-center gap-3">
             <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#22C55E,#15803D)">TP</div>
@@ -334,7 +385,7 @@
         </article>
 
         <article class="review-card">
-          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <div class="r-acc text-[11px] tracking-[4px] mb-4">★★★★★</div>
           <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"Professional, visionary, detail-oriented. The final product exceeded every expectation we had set."</p>
           <div class="flex items-center gap-3">
             <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#DB2777,#9D174D)">AV</div>
@@ -344,7 +395,7 @@
 
         <!-- duplicate set for seamless loop -->
         <article class="review-card">
-          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <div class="r-acc text-[11px] tracking-[4px] mb-4">★★★★★</div>
           <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"Transformative work. Our site became something we're genuinely proud to share with every new client."</p>
           <div class="flex items-center gap-3">
             <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#A855F7,#7C3AED)">SH</div>
@@ -353,7 +404,7 @@
         </article>
 
         <article class="review-card">
-          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <div class="r-acc text-[11px] tracking-[4px] mb-4">★★★★★</div>
           <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"The cinematic attention to detail is unparalleled. Cole brought a level of craft we didn't think was achievable."</p>
           <div class="flex items-center gap-3">
             <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#3B82F6,#1D4ED8)">JW</div>
@@ -362,7 +413,7 @@
         </article>
 
         <article class="review-card">
-          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <div class="r-acc text-[11px] tracking-[4px] mb-4">★★★★★</div>
           <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"Every scroll and hover feels intentional. Our bounce rate dropped 40% after the redesign&thinsp;&mdash;&thinsp;remarkable."</p>
           <div class="flex items-center gap-3">
             <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#EC4899,#BE185D)">PN</div>
@@ -371,7 +422,7 @@
         </article>
 
         <article class="review-card">
-          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <div class="r-acc text-[11px] tracking-[4px] mb-4">★★★★★</div>
           <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"I came in wanting a simple site. I left with a luxury experience that closes deals. Worth every penny."</p>
           <div class="flex items-center gap-3">
             <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#F59E0B,#B45309)">MB</div>
@@ -380,7 +431,7 @@
         </article>
 
         <article class="review-card">
-          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <div class="r-acc text-[11px] tracking-[4px] mb-4">★★★★★</div>
           <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"Astroh Atelier doesn't just build websites&thinsp;&mdash;&thinsp;they build atmospheres. Ours is now truly unforgettable."</p>
           <div class="flex items-center gap-3">
             <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#14B8A6,#0F766E)">EF</div>
@@ -389,7 +440,7 @@
         </article>
 
         <article class="review-card">
-          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <div class="r-acc text-[11px] tracking-[4px] mb-4">★★★★★</div>
           <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"The scroll animations alone generated more social shares than any campaign we had previously run."</p>
           <div class="flex items-center gap-3">
             <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#22C55E,#15803D)">TP</div>
@@ -398,7 +449,7 @@
         </article>
 
         <article class="review-card">
-          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <div class="r-acc text-[11px] tracking-[4px] mb-4">★★★★★</div>
           <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"Professional, visionary, detail-oriented. The final product exceeded every expectation we had set."</p>
           <div class="flex items-center gap-3">
             <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#DB2777,#9D174D)">AV</div>
@@ -414,7 +465,7 @@
       <div class="marquee-inner">
 
         <article class="review-card">
-          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <div class="r-acc text-[11px] tracking-[4px] mb-4">★★★★★</div>
           <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"Cole reimagined our entire digital identity. The site now feels like a world, not just a page."</p>
           <div class="flex items-center gap-3">
             <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#6366F1,#4338CA)">CR</div>
@@ -423,7 +474,7 @@
         </article>
 
         <article class="review-card">
-          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <div class="r-acc text-[11px] tracking-[4px] mb-4">★★★★★</div>
           <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"The depth in every interaction is something our audience comments on constantly. Pure craft."</p>
           <div class="flex items-center gap-3">
             <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#EAB308,#A16207)">NO</div>
@@ -432,7 +483,7 @@
         </article>
 
         <article class="review-card">
-          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <div class="r-acc text-[11px] tracking-[4px] mb-4">★★★★★</div>
           <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"We needed something that matched the quality of our work. Astroh Atelier delivered exactly that."</p>
           <div class="flex items-center gap-3">
             <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#10B981,#065F46)">DC</div>
@@ -441,7 +492,7 @@
         </article>
 
         <article class="review-card">
-          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <div class="r-acc text-[11px] tracking-[4px] mb-4">★★★★★</div>
           <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"Our conversion rate doubled. But more importantly, our brand finally looks as refined as it truly is."</p>
           <div class="flex items-center gap-3">
             <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#F472B6,#BE185D)">IT</div>
@@ -450,7 +501,7 @@
         </article>
 
         <article class="review-card">
-          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <div class="r-acc text-[11px] tracking-[4px] mb-4">★★★★★</div>
           <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"Working together felt collaborative from day one. They understood our vision before we did."</p>
           <div class="flex items-center gap-3">
             <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#0EA5E9,#0369A1)">PD</div>
@@ -459,7 +510,7 @@
         </article>
 
         <article class="review-card">
-          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <div class="r-acc text-[11px] tracking-[4px] mb-4">★★★★★</div>
           <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"I've worked with many designers. None have matched Cole's eye for motion and atmosphere."</p>
           <div class="flex items-center gap-3">
             <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#8B5CF6,#6D28D9)">YT</div>
@@ -469,7 +520,7 @@
 
         <!-- duplicate set for seamless loop -->
         <article class="review-card">
-          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <div class="r-acc text-[11px] tracking-[4px] mb-4">★★★★★</div>
           <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"Cole reimagined our entire digital identity. The site now feels like a world, not just a page."</p>
           <div class="flex items-center gap-3">
             <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#6366F1,#4338CA)">CR</div>
@@ -478,7 +529,7 @@
         </article>
 
         <article class="review-card">
-          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <div class="r-acc text-[11px] tracking-[4px] mb-4">★★★★★</div>
           <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"The depth in every interaction is something our audience comments on constantly. Pure craft."</p>
           <div class="flex items-center gap-3">
             <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#EAB308,#A16207)">NO</div>
@@ -487,7 +538,7 @@
         </article>
 
         <article class="review-card">
-          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <div class="r-acc text-[11px] tracking-[4px] mb-4">★★★★★</div>
           <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"We needed something that matched the quality of our work. Astroh Atelier delivered exactly that."</p>
           <div class="flex items-center gap-3">
             <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#10B981,#065F46)">DC</div>
@@ -496,7 +547,7 @@
         </article>
 
         <article class="review-card">
-          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <div class="r-acc text-[11px] tracking-[4px] mb-4">★★★★★</div>
           <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"Our conversion rate doubled. But more importantly, our brand finally looks as refined as it truly is."</p>
           <div class="flex items-center gap-3">
             <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#F472B6,#BE185D)">IT</div>
@@ -505,7 +556,7 @@
         </article>
 
         <article class="review-card">
-          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <div class="r-acc text-[11px] tracking-[4px] mb-4">★★★★★</div>
           <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"Working together felt collaborative from day one. They understood our vision before we did."</p>
           <div class="flex items-center gap-3">
             <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#0EA5E9,#0369A1)">PD</div>
@@ -514,7 +565,7 @@
         </article>
 
         <article class="review-card">
-          <div class="text-[#D8B4FE] text-[11px] tracking-[4px] mb-4">★★★★★</div>
+          <div class="r-acc text-[11px] tracking-[4px] mb-4">★★★★★</div>
           <p class="text-[14px] leading-[1.75] text-on-surface font-light mb-5">"I've worked with many designers. None have matched Cole's eye for motion and atmosphere."</p>
           <div class="flex items-center gap-3">
             <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#8B5CF6,#6D28D9)">YT</div>
@@ -531,18 +582,90 @@
 <!-- ── FOOTER ── -->
 <footer class="w-full py-14 border-t border-white/5 relative z-10">
   <div class="max-w-[1280px] mx-auto px-6 md:px-12 flex flex-col md:flex-row justify-between items-center gap-6">
-    <div class="text-base font-light tracking-widest text-white/30">ASTROH ATELIER</div>
+    <div class="flex items-center gap-2.5">
+      <img src="assets/logo.png" alt="" class="logo-img opacity-40" style="height:26px;width:auto;">
+      <span class="text-base font-light tracking-widest text-white/30">ASTROH ATELIER</span>
+    </div>
     <div class="flex gap-8">
       <a href="https://www.instagram.com/astrohatelier" target="_blank" rel="noopener noreferrer" class="font-sans text-[10px] tracking-widest uppercase text-white/30 hover:text-white/70 transition-colors duration-300">Instagram</a>
     </div>
-    <p class="font-sans text-[10px] tracking-widest uppercase text-[#D8B4FE]/60">
+    <p class="font-sans text-[10px] tracking-widest uppercase r-acc-60">
       &copy; 2026 ASTROH ATELIER. ALL RIGHTS RESERVED.
     </p>
   </div>
 </footer>
 
 <script>
-  // review section scroll reveal
+  // ── BACKGROUND THEME RANDOMIZER ──
+  const THEMES = [
+    {
+      video: 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260429_115139_0fc6bd3d-3631-4d26-ab9b-28293887dcc9.mp4',
+      acc: '216, 180, 254', accBright: '236, 215, 255', bgHex: '#131313',
+      objPos: 'center center',
+    },
+    {
+      video: 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260406_133058_0504132a-0cf3-4450-a370-8ea3b05c95d4.mp4',
+      acc: '251, 191, 36', accBright: '253, 230, 138', bgHex: '#110c04',
+      objPos: 'center 35%',
+    },
+    {
+      video: 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260405_171521_25968ba2-b594-4b32-aab7-f6b69398a6fa.mp4',
+      acc: '103, 232, 249', accBright: '165, 243, 252', bgHex: '#05090f',
+      objPos: 'center center',
+    },
+    {
+      video: 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260324_151826_c7218672-6e92-402c-9e45-f1e0f454bdc4.mp4',
+      acc: '110, 231, 183', accBright: '167, 243, 208', bgHex: '#040c08',
+      objPos: 'center center',
+    },
+    {
+      video: 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260402_143803_f635b644-d959-4f16-9d29-cedaeb5c6de0.mp4',
+      acc: '253, 164, 175', accBright: '254, 205, 211', bgHex: '#0f0508',
+      objPos: 'center center',
+    },
+    {
+      video: 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260314_131748_f2ca2a28-fed7-44c8-b9a9-bd9acdd5ec31.mp4',
+      acc: '165, 180, 252', accBright: '199, 210, 254', bgHex: '#07070e',
+      objPos: 'center center',
+    },
+    {
+      video: 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260319_055001_8e16d972-3b2b-441c-86ad-2901a54682f9.mp4',
+      acc: '253, 186, 116', accBright: '254, 215, 170', bgHex: '#0f0803',
+      objPos: 'center center',
+    },
+  ];
+
+  (function applyTheme() {
+    const theme = THEMES[Math.floor(Math.random() * THEMES.length)];
+    const root  = document.documentElement;
+
+    root.style.setProperty('--acc',       theme.acc);
+    root.style.setProperty('--acc-bright', theme.accBright);
+    root.style.setProperty('--bg-hex',    theme.bgHex);
+
+    // Set video source and position
+    const video = document.getElementById('bg-video');
+    video.style.objectPosition = theme.objPos || 'center center';
+    const src   = document.createElement('source');
+    src.src  = theme.video;
+    src.type = 'video/mp4';
+    video.appendChild(src);
+    video.load();
+
+    // Update gradient overlays that need the bg hex
+    document.getElementById('vignette').style.background =
+      `radial-gradient(ellipse at center, transparent 20%, ${theme.bgHex} 80%)`;
+    document.getElementById('fade-top').style.background =
+      `linear-gradient(to top, ${theme.bgHex}, transparent)`;
+    document.getElementById('fade-left').style.background =
+      `linear-gradient(to right, ${theme.bgHex}, transparent)`;
+    document.getElementById('fade-right').style.background =
+      `linear-gradient(to left, ${theme.bgHex}, transparent)`;
+    document.getElementById('ambient-glow').style.background =
+      `radial-gradient(ellipse at center, rgba(${theme.acc}, 0.055) 0%, transparent 72%)`;
+  })();
+
+  // ── REVIEW SCROLL REVEAL ──
   const revealEls = document.querySelectorAll('.review-reveal');
   const revealObs = new IntersectionObserver((entries) => {
     entries.forEach(e => {
@@ -554,6 +677,7 @@
   }, { threshold: 0.15 });
   revealEls.forEach(el => revealObs.observe(el));
 
+  // ── MOBILE MENU ──
   const btn  = document.getElementById('mobile-menu-btn');
   const menu = document.getElementById('mobile-menu');
   const icon = document.getElementById('menu-icon');
