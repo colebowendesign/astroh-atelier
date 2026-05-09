@@ -203,12 +203,12 @@
   </header>
 
   <!-- projects grid -->
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
 
     <!-- ── CARD 1: MUSEO DELLA NOTTE ── -->
     <article class="glass-panel rounded-xl overflow-hidden project-card reveal reveal-delay-1">
       <!-- media: video preview -->
-      <div class="h-[340px] w-full relative overflow-hidden" style="background:#06070d;">
+      <div class="aspect-[16/10] w-full relative overflow-hidden" style="background:#06070d;">
         <video autoplay muted loop playsinline poster="assets/museo-della-notte.jpg" class="project-video card-media opacity-90">
           <source src="assets/museo-della-notte.mp4" type="video/mp4"/>
         </video>
@@ -263,9 +263,9 @@
     </article>
 
     <!-- ── CARD 2: OBSIDIAN HYMN ── -->
-    <article class="glass-panel rounded-xl overflow-hidden project-card reveal reveal-delay-2 md:mt-20">
+    <article class="glass-panel rounded-xl overflow-hidden project-card reveal reveal-delay-2 md:mt-10">
       <!-- media: video preview -->
-      <div class="h-[340px] w-full relative overflow-hidden" style="background:#0a0a0a;">
+      <div class="aspect-[16/10] w-full relative overflow-hidden" style="background:#0a0a0a;">
         <video autoplay muted loop playsinline poster="assets/obsidian-hymn.jpg" class="project-video card-media opacity-90">
           <source src="assets/obsidian-hymn.mp4" type="video/mp4"/>
         </video>
@@ -319,10 +319,68 @@
       </div>
     </article>
 
-    <!-- ── CARD 3: KUROHEBI TATTOOS ── -->
+    <!-- ── CARD 3: LUMEN SENTINEL ── -->
+    <article class="glass-panel rounded-xl overflow-hidden project-card reveal reveal-delay-3 md:mt-20">
+      <!-- media: video preview -->
+      <div class="aspect-[16/10] w-full relative overflow-hidden" style="background:#0A0E1A;">
+        <video autoplay muted loop playsinline poster="assets/lumen-sentinel.jpg" class="project-video card-media opacity-90">
+          <source src="assets/lumen-sentinel.mp4" type="video/mp4"/>
+        </video>
+        <div class="absolute inset-0 bg-gradient-to-t from-[#0A0E1A] via-transparent to-transparent"></div>
+        <div class="absolute top-4 right-4 glass-panel rounded-full px-3 py-1 flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[13px] text-[#5B8CFF]" style="font-variation-settings:'FILL' 1">play_circle</span>
+          <span class="font-sans text-[9px] tracking-widest uppercase text-white/60 font-semibold">Video Preview</span>
+        </div>
+      </div>
+
+      <!-- card body -->
+      <div class="p-8">
+        <!-- type + year -->
+        <div class="flex items-center justify-between mb-4">
+          <div class="inline-flex items-center gap-2 glass-panel rounded-full px-3 py-1">
+            <span class="w-1.5 h-1.5 rounded-full animate-pulse" style="background:#5B8CFF;box-shadow:0 0 6px #5B8CFF88;"></span>
+            <span class="font-sans text-[9px] tracking-widest uppercase text-white/50 font-semibold">Cybersecurity Platform</span>
+          </div>
+          <span class="font-sans text-[9px] tracking-widest uppercase text-white/25 font-semibold">2026</span>
+        </div>
+
+        <h2 class="text-[28px] leading-[1.2] font-medium text-on-background mb-3">Lumen Sentinel</h2>
+
+        <p class="text-[15px] leading-[1.65] text-on-surface-variant mb-6">
+          A premium cybersecurity platform built on the ethos of "your light in the dark web." Deep-void navy surfaces shift through electric blue and warm horizon gold as GSAP ScrollTrigger drives cinematic scroll-reveals. Chrome-metallic serif headlines, grain overlays, and animated orb loaders fuse technical precision with a refined digital identity — quiet, confident, and always watching.
+        </p>
+
+        <!-- color palette -->
+        <div class="flex items-center gap-2 mb-5">
+          <span class="font-sans text-[9px] tracking-widest uppercase text-white/30 font-semibold mr-1">Palette</span>
+          <span class="color-swatch" style="background:#0A0E1A;" title="Deep Void Navy"></span>
+          <span class="color-swatch" style="background:#5B8CFF;" title="Electric Blue"></span>
+          <span class="color-swatch" style="background:#E8B080;" title="Horizon Gold"></span>
+        </div>
+
+        <!-- tags -->
+        <div class="flex flex-wrap gap-2 mb-7">
+          <span class="glass-panel rounded-full px-3 py-1 font-sans text-[9px] tracking-widest uppercase text-white/40 font-semibold">GSAP ScrollTrigger</span>
+          <span class="glass-panel rounded-full px-3 py-1 font-sans text-[9px] tracking-widest uppercase text-white/40 font-semibold">Cybersecurity</span>
+          <span class="glass-panel rounded-full px-3 py-1 font-sans text-[9px] tracking-widest uppercase text-white/40 font-semibold">Orb Loader</span>
+          <span class="glass-panel rounded-full px-3 py-1 font-sans text-[9px] tracking-widest uppercase text-white/40 font-semibold">Grain Texture</span>
+          <span class="glass-panel rounded-full px-3 py-1 font-sans text-[9px] tracking-widest uppercase text-white/40 font-semibold">Chrome Typography</span>
+        </div>
+
+        <!-- CTA -->
+        <a href="https://lumen-sentinel.vercel.app/" target="_blank" rel="noopener noreferrer"
+           class="inline-flex items-center gap-2 font-sans text-[10px] tracking-widest uppercase font-semibold text-[#D8B4FE] border border-[#D8B4FE]/30 px-5 py-2.5 rounded-full hover:bg-[#D8B4FE]/8 transition-all duration-300">
+          View Live Site
+          <span class="material-symbols-outlined text-[14px]" style="font-variation-settings:'FILL' 1">open_in_new</span>
+        </a>
+      </div>
+    </article>
+
+    <!-- ── CARD 4: KUROHEBI TATTOOS ── -->
+
     <article class="glass-panel rounded-xl overflow-hidden project-card reveal reveal-delay-3">
       <!-- media: video preview -->
-      <div class="h-[340px] w-full relative overflow-hidden" style="background:#100D0B;">
+      <div class="aspect-[16/10] w-full relative overflow-hidden" style="background:#100D0B;">
         <video autoplay muted loop playsinline poster="assets/kurohebi-tattoos.jpg" class="project-video card-media opacity-90">
           <source src="assets/kurohebi-tattoos.mp4" type="video/mp4"/>
         </video>
@@ -377,9 +435,9 @@
     </article>
 
     <!-- ── CARD 4: COSMIC SOLUTIONS ── -->
-    <article class="glass-panel rounded-xl overflow-hidden project-card reveal reveal-delay-4 md:mt-20">
+    <article class="glass-panel rounded-xl overflow-hidden project-card reveal reveal-delay-4 md:mt-10">
       <!-- media: video preview -->
-      <div class="h-[340px] w-full relative overflow-hidden" style="background:#0A0815;">
+      <div class="aspect-[16/10] w-full relative overflow-hidden" style="background:#0A0815;">
         <video autoplay muted loop playsinline poster="assets/cosmic-solutions.jpg" class="project-video card-media opacity-90">
           <source src="assets/cosmic-solutions.mp4" type="video/mp4"/>
         </video>
@@ -433,9 +491,9 @@
     </article>
 
     <!-- ── CARD 5: FADE AVENUE ── -->
-    <article class="glass-panel rounded-xl overflow-hidden project-card reveal reveal-delay-1">
+    <article class="glass-panel rounded-xl overflow-hidden project-card reveal reveal-delay-1 md:mt-20">
       <!-- media: video preview -->
-      <div class="h-[340px] w-full relative overflow-hidden bg-[#0a0a0a]">
+      <div class="aspect-[16/10] w-full relative overflow-hidden bg-[#0a0a0a]">
         <video autoplay muted loop playsinline poster="assets/fade-avenue.jpg" class="project-video card-media opacity-90">
           <source src="assets/fade-avenue.mp4" type="video/mp4"/>
         </video>
@@ -489,9 +547,9 @@
     </article>
 
     <!-- ── CARD 6: JERRY'S AUTOMOTIVE ── -->
-    <article class="glass-panel rounded-xl overflow-hidden project-card reveal reveal-delay-2 md:mt-20">
+    <article class="glass-panel rounded-xl overflow-hidden project-card reveal reveal-delay-2">
       <!-- media: video preview -->
-      <div class="h-[340px] w-full relative overflow-hidden bg-[#0d0d0d]">
+      <div class="aspect-[16/10] w-full relative overflow-hidden bg-[#0d0d0d]">
         <video autoplay muted loop playsinline poster="assets/jerrys-automotive.jpg" class="project-video card-media opacity-90">
           <source src="assets/jerrys-automotive.mp4" type="video/mp4"/>
         </video>
@@ -542,9 +600,9 @@
     </article>
 
     <!-- ── CARD 7: THE CRAB HOUSE ── -->
-    <article class="glass-panel rounded-xl overflow-hidden project-card reveal reveal-delay-3">
+    <article class="glass-panel rounded-xl overflow-hidden project-card reveal reveal-delay-3 md:mt-10">
       <!-- media: video preview -->
-      <div class="h-[340px] w-full relative overflow-hidden" style="background:#0c1612;">
+      <div class="aspect-[16/10] w-full relative overflow-hidden" style="background:#0c1612;">
         <video autoplay muted loop playsinline poster="assets/crab-house.jpg" class="project-video card-media opacity-90">
           <source src="assets/crab-house.mp4" type="video/mp4"/>
         </video>
@@ -597,7 +655,7 @@
     <!-- ── CARD 8: OEC JAPANESE EXPRESS ── -->
     <article class="glass-panel rounded-xl overflow-hidden project-card reveal reveal-delay-4 md:mt-20">
       <!-- media: video preview -->
-      <div class="h-[340px] w-full relative overflow-hidden bg-[#f5f5f7]">
+      <div class="aspect-[16/10] w-full relative overflow-hidden bg-[#f5f5f7]">
         <video autoplay muted loop playsinline poster="assets/oec-japanese.jpg" class="project-video card-media opacity-90">
           <source src="assets/oec-japanese.mp4" type="video/mp4"/>
         </video>
@@ -650,7 +708,7 @@
     <!-- ── CARD 9: EQUINOX COFFEE ── -->
     <article class="glass-panel rounded-xl overflow-hidden project-card reveal reveal-delay-1">
       <!-- media: video preview -->
-      <div class="h-[340px] w-full relative overflow-hidden bg-[#0b1326]">
+      <div class="aspect-[16/10] w-full relative overflow-hidden bg-[#0b1326]">
         <video autoplay muted loop playsinline poster="assets/equinox-coffee.jpg" class="project-video card-media opacity-90">
           <source src="assets/equinox-coffee.mp4" type="video/mp4"/>
         </video>
