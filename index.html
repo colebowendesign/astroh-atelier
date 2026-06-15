@@ -427,6 +427,16 @@ footer a:hover{color:var(--violet)}
   .hud-brand b{display:none}
   .hud-depth{display:none}
 
+  /* CSS nebula glow to replace the Three.js SpriteMaterial nebula on mobile.
+     Sits above the opaque cosmos canvas via z-index:1 with screen blend. */
+  #atmosphere{
+    background:
+      radial-gradient(55% 42% at 50% 44%, rgba(124,92,255,.22) 0%, transparent 65%),
+      radial-gradient(38% 30% at 50% 44%, rgba(201,92,255,.12) 0%, transparent 55%),
+      radial-gradient(120% 90% at 50% 50%, transparent 55%, rgba(2,2,8,.55) 100%);
+    mix-blend-mode:screen;
+  }
+
 
   /* Warp canvas draws streaks by moving stars per frame; at mobile idle-scroll
      speed the per-frame movement is <1 px so they appear as static glowing dots.
@@ -817,10 +827,13 @@ let scrollVelocity = 0;
       new THREE.MeshBasicMaterial({color:0x160d2b,transparent:true,opacity:.6}));
     core.add(innerCore);
 
-    // nebula glow plane (big sprite)
-    const nMat=new THREE.SpriteMaterial({map:tex,color:0x7c5cff,transparent:true,opacity:.5,blending:THREE.AdditiveBlending,depthWrite:false});
-    nebula=new THREE.Sprite(nMat);nebula.scale.set(900,900,1);nebula.position.set(0,0,-300);
-    scene.add(nebula);
+    // nebula glow sprite — desktop only; SpriteMaterial with AdditiveBlending fragments
+    // into dot artifacts on mobile WebGL, so skip it and rely on CSS glow on mobile
+    if(!isMobile){
+      const nMat=new THREE.SpriteMaterial({map:tex,color:0x7c5cff,transparent:true,opacity:.5,blending:THREE.AdditiveBlending,depthWrite:false});
+      nebula=new THREE.Sprite(nMat);nebula.scale.set(900,900,1);nebula.position.set(0,0,-300);
+      scene.add(nebula);
+    }
 
     const tintFrom=new THREE.Color(0x7c5cff), tintTo=new THREE.Color(0x7c5cff);
     let curTint=new THREE.Color(0x7c5cff);
@@ -854,8 +867,7 @@ let scrollVelocity = 0;
 
       curTint.lerp(tintTo,0.03);
       core.material.color.copy(curTint);
-      nebula.material.color.copy(curTint);
-      nebula.material.opacity = .35 + Math.sin(t*0.6)*0.1;
+      if(nebula){ nebula.material.color.copy(curTint); nebula.material.opacity=.35+Math.sin(t*0.6)*0.1; }
       scene.fog.color.copy(curTint).multiplyScalar(0.06);
 
       renderer.render(scene,camera);
