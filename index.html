@@ -749,9 +749,10 @@ let scrollVelocity = 0;
 
 /* ========================================================= COSMOS (Three.js) */
 (function cosmos(){
-  // On mobile, WebGL PointsMaterial renders as hard dot circles on most mobile GPUs —
-  // bail to the CSS starfield instead which is lighter and artifact-free
-  if(REDUCED||isMobile){ document.body.classList.add("fallback-on"); return; }
+  if(REDUCED){ document.body.classList.add("fallback-on"); return; }
+  // On mobile: CSS starfield handles background stars (avoids PointsMaterial dot artifacts)
+  // but WebGL still runs so the sphere focal point is preserved
+  if(isMobile) document.body.classList.add("fallback-on");
   let renderer, scene, camera, stars=[], core, nebula, raf;
   try{
     const canvas = document.getElementById("cosmos");
@@ -775,30 +776,33 @@ let scrollVelocity = 0;
     const tex = sprite();
     const palette=[0xffffff,0xc9d4ff,0x7c5cff,0x5c8cff,0xc95cff];
 
-    // multiple depth layers of stars
-    const layers = isMobile?3:5;
-    const perLayer = isMobile?700:1400;
-    for(let l=0;l<layers;l++){
-      const g=new THREE.BufferGeometry();
-      const n=perLayer, pos=new Float32Array(n*3), col=new Float32Array(n*3);
-      const spread=900+l*260;
-      for(let i=0;i<n;i++){
-        pos[i*3]  =(Math.random()-.5)*spread*1.6;
-        pos[i*3+1]=(Math.random()-.5)*spread;
-        pos[i*3+2]=(Math.random()-.5)*spread - l*120;
-        const cHex=palette[Math.random()<.18?(2+(Math.random()*3|0)):(Math.random()<.5?0:1)];
-        const cc=new THREE.Color(cHex);
-        col[i*3]=cc.r;col[i*3+1]=cc.g;col[i*3+2]=cc.b;
+    // Star point clouds — desktop only; PointsMaterial renders as hard dot circles
+    // on mobile GPUs so we skip this and let the CSS starfield handle background stars
+    if(!isMobile){
+      const layers = 5;
+      const perLayer = 1400;
+      for(let l=0;l<layers;l++){
+        const g=new THREE.BufferGeometry();
+        const n=perLayer, pos=new Float32Array(n*3), col=new Float32Array(n*3);
+        const spread=900+l*260;
+        for(let i=0;i<n;i++){
+          pos[i*3]  =(Math.random()-.5)*spread*1.6;
+          pos[i*3+1]=(Math.random()-.5)*spread;
+          pos[i*3+2]=(Math.random()-.5)*spread - l*120;
+          const cHex=palette[Math.random()<.18?(2+(Math.random()*3|0)):(Math.random()<.5?0:1)];
+          const cc=new THREE.Color(cHex);
+          col[i*3]=cc.r;col[i*3+1]=cc.g;col[i*3+2]=cc.b;
+        }
+        g.setAttribute("position",new THREE.BufferAttribute(pos,3));
+        g.setAttribute("color",new THREE.BufferAttribute(col,3));
+        const m=new THREE.PointsMaterial({
+          size:2.4 - l*0.25, map:tex, vertexColors:true, transparent:true,
+          depthWrite:false, blending:THREE.AdditiveBlending, opacity:.9 - l*.08
+        });
+        const p=new THREE.Points(g,m);
+        p.userData.speed = 0.02 + l*0.015;
+        scene.add(p); stars.push(p);
       }
-      g.setAttribute("position",new THREE.BufferAttribute(pos,3));
-      g.setAttribute("color",new THREE.BufferAttribute(col,3));
-      const m=new THREE.PointsMaterial({
-        size:2.4 - l*0.25, map:tex, vertexColors:true, transparent:true,
-        depthWrite:false, blending:THREE.AdditiveBlending, opacity:.9 - l*.08
-      });
-      const p=new THREE.Points(g,m);
-      p.userData.speed = 0.02 + l*0.015;
-      scene.add(p); stars.push(p);
     }
 
     // central surreal core: wireframe icosahedron + inner solid
