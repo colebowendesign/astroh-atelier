@@ -402,6 +402,11 @@ footer a:hover{color:var(--violet)}
   .hud-brand b{display:none}
   .hud-depth{display:none}
 
+  /* Warp canvas draws streaks by moving stars per frame; at mobile idle-scroll
+     speed the per-frame movement is <1 px so they appear as static glowing dots.
+     The Three.js starfield behind it is sufficient on mobile. */
+  #warp{display:none}
+
   /* Capabilities: collapse scattered 12-col grid → single column */
   #nebula{min-height:auto;padding-top:12vh;padding-bottom:10vh}
   #nebula .orbits{grid-template-columns:1fr;row-gap:3vh}
@@ -1059,10 +1064,12 @@ window.addEventListener("load",()=>{
 (function heroTitle(){
   const h=document.getElementById("heroTitle");
   const word="ASTROH ATELIER";
-  h.innerHTML = word.split("").map(c=>
-    c===" "?'<span class="a" style="width:.3em;display:inline-block">&nbsp;</span>'
-    :`<span class="a" style="opacity:0;transform:translateY(40px);filter:blur(10px)">${c}</span>`
-  ).join("");
+  // Wrap each word in a non-breaking container so "ATELIER" can't split across lines
+  h.innerHTML = word.split(" ").map(w=>
+    `<span style="display:inline-block;white-space:nowrap">${
+      w.split("").map(c=>`<span class="a" style="opacity:0;transform:translateY(40px);filter:blur(10px)">${c}</span>`).join("")
+    }</span>`
+  ).join('<span class="a" style="width:.3em;display:inline-block;opacity:0">&nbsp;</span>');
 })();
 
 /* ========================================================= WAYPOINTS */
