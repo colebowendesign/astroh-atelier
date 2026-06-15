@@ -57,16 +57,41 @@ img{display:block;max-width:100%}
   position:fixed;inset:0;z-index:0;
   background:radial-gradient(130% 100% at 50% 0%, #0b0a1e 0%, #06060f 45%, #030308 100%);
 }
-/* CSS fallback starfield if WebGL fails */
+/* CSS fallback starfield (mobile primary + WebGL fail fallback) */
 .fallback-stars{
   position:fixed;inset:0;z-index:0;opacity:0;transition:opacity .8s;
   background:
-    radial-gradient(2px 2px at 20% 30%, #fff, transparent),
-    radial-gradient(1px 1px at 60% 70%, #cdd, transparent),
-    radial-gradient(1.5px 1.5px at 80% 20%, #fff, transparent),
-    radial-gradient(1px 1px at 40% 80%, #bcd, transparent),
-    radial-gradient(2px 2px at 90% 60%, #fff, transparent),
-    radial-gradient(130% 100% at 50% 0%, #0b0a1e, #030308 70%);
+    /* scattered star field — varied sizes and opacities */
+    radial-gradient(1px 1px at  4%  9%, rgba(255,255,255,.85), transparent 2px),
+    radial-gradient(1.5px 1.5px at 11% 31%, rgba(201,212,255,.65), transparent 3px),
+    radial-gradient(1px 1px at 17% 58%, rgba(255,255,255,.5),  transparent 2px),
+    radial-gradient(1px 1px at 22%  4%, rgba(201,212,255,.75), transparent 2px),
+    radial-gradient(1px 1px at 28% 77%, rgba(255,255,255,.6),  transparent 2px),
+    radial-gradient(2px 2px at 33% 19%, rgba(255,255,255,.4),  transparent 4px),
+    radial-gradient(1px 1px at 39% 46%, rgba(201,212,255,.7),  transparent 2px),
+    radial-gradient(1px 1px at 45% 88%, rgba(255,255,255,.55), transparent 2px),
+    radial-gradient(1.5px 1.5px at 51% 24%, rgba(124,92,255,.5), transparent 3px),
+    radial-gradient(1px 1px at 57% 63%, rgba(255,255,255,.65), transparent 2px),
+    radial-gradient(1px 1px at 62%  7%, rgba(201,212,255,.8),  transparent 2px),
+    radial-gradient(1.5px 1.5px at 68% 40%, rgba(255,255,255,.45), transparent 3px),
+    radial-gradient(1px 1px at 73% 82%, rgba(201,212,255,.6),  transparent 2px),
+    radial-gradient(2px 2px at 79% 15%, rgba(124,92,255,.4),   transparent 4px),
+    radial-gradient(1px 1px at 84% 53%, rgba(255,255,255,.7),  transparent 2px),
+    radial-gradient(1px 1px at 88% 71%, rgba(201,212,255,.55), transparent 2px),
+    radial-gradient(1.5px 1.5px at 93% 35%, rgba(255,255,255,.5), transparent 3px),
+    radial-gradient(1px 1px at 97% 90%, rgba(201,212,255,.65), transparent 2px),
+    radial-gradient(1px 1px at  8% 68%, rgba(255,255,255,.45), transparent 2px),
+    radial-gradient(1px 1px at 48%  5%, rgba(201,212,255,.7),  transparent 2px),
+    radial-gradient(1px 1px at 36% 93%, rgba(255,255,255,.5),  transparent 2px),
+    radial-gradient(1px 1px at 76% 95%, rgba(201,212,255,.6),  transparent 2px),
+    radial-gradient(1.5px 1.5px at 15% 82%, rgba(124,92,255,.35), transparent 3px),
+    radial-gradient(1px 1px at 60% 48%, rgba(255,255,255,.5),  transparent 2px),
+    /* nebula soft glows */
+    radial-gradient(55% 35% at 25% 18%, rgba(124,92,255,.10), transparent),
+    radial-gradient(45% 30% at 75% 75%, rgba(201,92,255,.08), transparent),
+    radial-gradient(35% 25% at 60% 30%, rgba(92,140,255,.07), transparent),
+    /* base void gradient */
+    radial-gradient(130% 100% at 50% 0%, #0b0a1e 0%, #06060f 45%, #030308 100%);
 }
 .fallback-on .fallback-stars{opacity:1}
 
@@ -724,7 +749,9 @@ let scrollVelocity = 0;
 
 /* ========================================================= COSMOS (Three.js) */
 (function cosmos(){
-  if(REDUCED){ document.body.classList.add("fallback-on"); return; }
+  // On mobile, WebGL PointsMaterial renders as hard dot circles on most mobile GPUs —
+  // bail to the CSS starfield instead which is lighter and artifact-free
+  if(REDUCED||isMobile){ document.body.classList.add("fallback-on"); return; }
   let renderer, scene, camera, stars=[], core, nebula, raf;
   try{
     const canvas = document.getElementById("cosmos");
@@ -842,7 +869,7 @@ let scrollVelocity = 0;
 
 /* ========================================================= HYPERSPACE WARP */
 (function warp(){
-  if(REDUCED)return;
+  if(REDUCED||isMobile)return;
   const cv=document.getElementById("warp"); if(!cv)return;
   const ctx=cv.getContext("2d");
   let W,H,DPR,cx,cy,maxR,stars=[];
