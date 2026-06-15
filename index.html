@@ -393,6 +393,69 @@ footer a:hover{color:var(--violet)}
   .reticle,.reticle-core,.scan{display:none}
   #boot{display:none}
 }
+
+/* ============ MOBILE & TABLET RESPONSIVE ============ */
+
+/* ── additional 820px fixes (work/voices already handled above) ── */
+@media (max-width:820px){
+  /* HUD: hide brand label to prevent overlap with availability status */
+  .hud-brand b{display:none}
+  .hud-depth{display:none}
+
+  /* Capabilities: collapse scattered 12-col grid → single column */
+  #nebula{min-height:auto;padding-top:12vh;padding-bottom:10vh}
+  #nebula .orbits{grid-template-columns:1fr;row-gap:3vh}
+  .cap.c1,.cap.c2,.cap.c3,.cap.c4,.cap.c5{grid-column:1/2!important;margin-top:0!important}
+
+  /* Drift: reduce tall min-height; left-align offset lines */
+  #drift{min-height:auto;padding-top:12vh;padding-bottom:10vh}
+  .dl-2{margin-top:7vh;margin-left:0;text-align:left}
+  .dl-3{margin-top:7vh;text-align:left}
+
+  /* Footer: stack brand + meta vertically */
+  footer{flex-direction:column;align-items:flex-start;gap:20px}
+  footer .fmeta{text-align:left}
+
+  /* Restore pointer cursor for tappable elements */
+  .proj .frame,.cap{cursor:pointer}
+}
+
+/* ── small phones (≤480px) ── */
+@media (max-width:480px){
+  #launch{padding-top:8vh;padding-bottom:10vh}
+  #signal .actions{flex-direction:column;align-items:stretch;gap:12px}
+  .btn{text-align:center;padding:15px 20px}
+}
+
+/* ── tablet only (821px–1100px): soften capability layout ── */
+@media (min-width:821px) and (max-width:1100px){
+  .hud-depth{display:none}
+  #nebula .orbits{grid-template-columns:repeat(6,1fr);row-gap:5vh}
+  .cap.c1{grid-column:1/5;margin-top:0}
+  .cap.c2{grid-column:3/7;margin-top:6vh}
+  .cap.c3{grid-column:1/5;margin-top:2vh}
+  .cap.c4{grid-column:3/7;margin-top:0}
+  .cap.c5{grid-column:2/6;margin-top:3vh}
+}
+
+/* ── touch: neutralise sticky hover states; add tap feedback ── */
+@media (pointer:coarse){
+  /* Cap cards: no hover lift (gets stuck on tap in iOS Safari) */
+  .cap:hover{transform:none;border-color:var(--line)}
+  .cap:hover::before{opacity:0}
+  .cap:active{border-color:rgba(124,92,255,.5);transform:translateY(-3px)}
+  .cap:active::before{opacity:1}
+
+  /* Proj cards: always show visit hint; neutralise sticky hover */
+  .proj .scan-hint{opacity:.85}
+  .proj:hover .thumb{transform:none;box-shadow:none;border-color:var(--line)}
+  .proj:hover .thumb::after{opacity:0}
+  .proj:active .thumb{border-color:rgba(124,92,255,.5)}
+
+  /* Buttons: fill animates on tap */
+  .btn:active::before{transform:translateY(0)}
+  .btn:active{color:#fff;border-color:transparent}
+}
 </style>
 </head>
 <body class="booting">
