@@ -427,10 +427,6 @@ footer a:hover{color:var(--violet)}
   .hud-brand b{display:none}
   .hud-depth{display:none}
 
-  /* Lift the WebGL canvas above .fallback-stars (same z-index:0 but later in DOM =
-     .fallback-stars paints on top and buries the sphere). Removing the CSS background
-     from #cosmos is safe because .fallback-stars now carries the dark gradient. */
-  #cosmos{z-index:1;background:none}
 
   /* Warp canvas draws streaks by moving stars per frame; at mobile idle-scroll
      speed the per-frame movement is <1 px so they appear as static glowing dots.
@@ -755,13 +751,14 @@ let scrollVelocity = 0;
 /* ========================================================= COSMOS (Three.js) */
 (function cosmos(){
   if(REDUCED){ document.body.classList.add("fallback-on"); return; }
-  // On mobile: CSS starfield handles background stars (avoids PointsMaterial dot artifacts)
-  // but WebGL still runs so the sphere focal point is preserved
-  if(isMobile) document.body.classList.add("fallback-on");
+  // On mobile: renderer is opaque (no alpha) so the canvas owns its dark background
+  // and nothing can paint over the sphere. fallback-on is NOT set here — only the
+  // catch block sets it if WebGL actually fails.
   let renderer, scene, camera, stars=[], core, nebula, raf;
   try{
     const canvas = document.getElementById("cosmos");
-    renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
+    renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:!isMobile});
+    if(isMobile) renderer.setClearColor(0x06060f, 1);
     renderer.setSize(innerWidth, innerHeight);
     renderer.setPixelRatio(Math.min(devicePixelRatio,2));
     scene = new THREE.Scene();
