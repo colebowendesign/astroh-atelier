@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#05060c">
 <title>ASTROH ATELIER — Transmission from the Atelier</title>
 <meta name="description" content="Astroh Atelier — web design from the far edge of the ordinary. Cinematic interaction, scroll-driven animation, and atmospheric depth for luxury and creative brands.">
 <link rel="icon" href="https://astroh-atelier.vercel.app/assets/logo.png">
@@ -51,7 +52,7 @@ img{display:block;max-width:100%}
 button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 
 /* ---------- fixed backdrop ---------- */
-#stars{position:fixed;inset:0;z-index:0;display:block}
+#stars{position:fixed;inset:0;z-index:0;display:block;pointer-events:none}
 #relic{position:fixed;inset:0;z-index:3;display:block;pointer-events:none}
 .nebulae{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
 .nebula{position:absolute;border-radius:50%;filter:blur(90px);opacity:.5;will-change:transform}
@@ -390,7 +391,11 @@ footer .f-note{font-family:var(--mono);font-size:9.5px;letter-spacing:.22em;
   text-transform:uppercase;color:var(--dim)}
 @media(max-width:640px){
   .hud-bl,.hud-br{display:none}
-  .dots a span{display:none}
+  .dots{display:none}
+  .voice-stage{min-height:380px}
+  .voice blockquote{font-size:clamp(1.2rem,5.4vw,1.6rem)}
+  .hero-cta{gap:18px}
+  .btn{padding:16px 26px}
 }
 </style>
 </head>
@@ -748,6 +753,7 @@ footer .f-note{font-family:var(--mono);font-size:9.5px;letter-spacing:.22em;
 "use strict";
 var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 var finePointer = window.matchMedia("(pointer: fine)").matches;
+var smallScreen = window.innerWidth < 768;   /* phones: lighter effects, larger relative singularity */
 
 /* ============ word-reveal prep ============ */
 document.querySelectorAll(".wr").forEach(function(el){
@@ -811,7 +817,7 @@ if(reduced){
 /* ============ starfield ============ */
 var canvas = document.getElementById("stars");
 var ctx = canvas.getContext("2d");
-var W, H, DPR, stars = [], N = 260;
+var W, H, DPR, stars = [], N = smallScreen ? 150 : 260;
 var velocity = 0, targetVel = 0, lastY = window.scrollY;
 var mx = 0, my = 0;
 
@@ -1169,7 +1175,7 @@ function drawWell(ga, tilt, rot, cx, cy, R, speedMul, dt){
 
 /* ============ content lensing — the page itself bends ============ */
 var warps = [];
-if(!reduced){
+if(!reduced && !smallScreen){   /* content lensing is a desktop luxury — phones keep the frame budget */
   var WARP_SEL = ".wr,.wr .w,.hero-sub,.hero-cta,.eyebrow,.m-copy,.force,.sig,.con-hint," +
                  ".voice-stage,.voice-hud,.sig-copy,.sig-cta,.sig-coord,footer .f-brand,footer .f-note,footer .link-line";
   document.querySelectorAll(WARP_SEL).forEach(function(el){
@@ -1270,14 +1276,14 @@ if(reduced){
     var gaT = (yNow > conStartY && yNow < conEndY) ? 0.32 : 0.85;
     var tilt = 0.26 + 0.22*Math.sin(p*Math.PI);   /* disk opens mid-descent */
     var rot  = -0.30 + p*0.85 + 0.03*Math.sin(rT*0.12);
-    var R    = Math.min(W,H)*(0.115 + p*0.10);    /* the well grows as you approach */
+    var R    = Math.min(W,H)*(smallScreen ? 0.165 + p*0.12 : 0.115 + p*0.10);  /* the well grows as you approach */
     var cx = W*0.5 + Math.sin(p*6.283)*W*0.16 - mx*26;
     var cy = H*0.52 + Math.cos(p*6.283)*H*0.045 - my*26;
     /* boot: the singularity forms small and violent, then eases into
        its hero orbit — one object, never leaving the screen */
     var arcA = 0;
     if(bootActive || heroT0){
-      var bR = Math.min(W,H)*(0.05 + 0.065*bootP);
+      var bR = Math.min(W,H)*(smallScreen ? 0.08 + 0.085*bootP : 0.05 + 0.065*bootP);
       var bcx = W*0.5 - mx*10, bcy = H*0.52 - my*10;
       var btilt = 0.16 + 0.12*bootP;
       var bspd = 2.4 - 1.2*bootP;                  /* hot young disk, settling */
