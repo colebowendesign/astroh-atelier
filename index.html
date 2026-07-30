@@ -1088,7 +1088,11 @@ if(orrOn){
     if(w.slug){
       el.innerHTML =
         '<span class="oface-plate">' +
-          '<img alt="" decoding="async"' + (i < 2 ? '' : ' loading="lazy"') +
+          /* Not lazy. All six plates together are 45KB, and a face that
+             hasn't loaded yet pops in as the body turns onto it — which is
+             the one moment the section is asking to be looked at. Trading a
+             visible pop for 45KB of deferral is a bad deal. */
+          '<img alt="" decoding="async"' +
             ' src="assets/shots/sm/' + w.slug + '.webp"' +
             ' srcset="assets/shots/sm/' + w.slug + '.webp 480w, assets/shots/md/' + w.slug + '.webp 960w"' +
             ' sizes="(max-width:900px) 78vw, 32vw" width="480" height="300">' +
