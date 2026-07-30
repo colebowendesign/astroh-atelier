@@ -636,7 +636,7 @@ footer .f-note{font-family:var(--mono);font-size:9.5px;letter-spacing:.22em;
   <div class="con-head">
     <div class="eyebrow rv">03 — Constellation of Work</div>
     <h2 class="h-display h-xl wr" style="max-width:14ch">Worlds already <span class="it">built.</span></h2>
-    <p class="hero-sub rv" style="margin-top:22px">Seven faces on one turning body. Drag it, or let the descent turn it for you.</p>
+    <p class="hero-sub rv" style="margin-top:22px">Seventeen brand worlds on one turning body. Drag it, or let the descent turn it for you.</p>
   </div>
 
   <div class="con-track-wrap" id="conWrap">
@@ -664,7 +664,7 @@ footer .f-note{font-family:var(--mono);font-size:9.5px;letter-spacing:.22em;
             <line class="orr-rose-n" x1="0" y1="0" x2="0" y2="-80"></line>
           </svg>
           <ol></ol>
-          <p class="orr-count"><b>01</b><i>/07</i></p>
+          <p class="orr-count"><b>01</b><i>/18</i></p>
         </nav>
       </div>
     </div>
@@ -672,48 +672,81 @@ footer .f-note{font-family:var(--mono);font-size:9.5px;letter-spacing:.22em;
 
   <div class="con-hint rv" id="conHint">Drag the body · ← → to step</div>
 
-  <!-- The seven worlds. This list is the single source of truth: the ring is
-       built from it, and it is what remains if JavaScript never arrives. -->
+  <!-- Every world. This list is the single source of truth: the ring is built
+       from it, and it is what remains if JavaScript never arrives.
+       data-live="0" means the project is built but not currently deployed —
+       the face and the write-up still show, the visit link is simply absent
+       rather than pointing somewhere broken. -->
   <ol class="orr-index" id="orrIndex">
-    <li data-slug="museo" data-world="w-museo" data-no="SIG-01"
-        data-tag="Nocturnal museum · candlelight &amp; grain"
-        data-pal="#241708,#e3b95e,#120b04">
+    <li data-slug="museo" data-world="w-museo" data-tag="Nocturnal museum · candlelight &amp; grain" data-pal="#241708,#e3b95e,#120b04">
       <a href="https://museo-della-notte.vercel.app/museo.html" target="_blank" rel="noopener">Museo della Notte</a>
       <p>A museum that only opens after dark. Gold leaf on ink, entered through a curtain that lifts as you arrive.</p>
     </li>
-    <li data-slug="hymn" data-world="w-hymn" data-no="SIG-02"
-        data-tag="Gothic fashion · ritual lookbook"
-        data-pal="#1c0507,#a41e26,#d8d3d6">
+    <li data-slug="hymn" data-world="w-hymn" data-tag="Gothic fashion · ritual lookbook" data-pal="#1c0507,#a41e26,#d8d3d6">
       <a href="https://obsidian-hymn.vercel.app" target="_blank" rel="noopener">Obsidian Hymn</a>
       <p>Liturgical apparel sold from a reliquary. Sigils drawn as line art, and a lookbook that reads like a hymnal.</p>
     </li>
-    <li data-slug="aether" data-world="w-aether" data-no="SIG-03"
-        data-tag="Luxury car rental · pearl &amp; coral"
-        data-pal="#efe9df,#d26a55,#cfc3b1">
+    <li data-slug="aether" data-world="w-aether" data-tag="Luxury car rental · pearl &amp; coral" data-pal="#efe9df,#d26a55,#cfc3b1">
       <a href="https://aether-rentals.vercel.app/" target="_blank" rel="noopener">Aether Rentals</a>
       <p>An electric grand tourer introduced the way a perfume is, not the way a spec sheet is.</p>
     </li>
-    <li data-slug="lumen" data-world="w-lumen" data-no="SIG-04"
-        data-tag="Cybersecurity · chrome surrealism"
-        data-pal="#0d1a2e,#a8dcff,#04070e">
+    <li data-slug="lumen" data-world="w-lumen" data-tag="Cybersecurity · chrome surrealism" data-pal="#0d1a2e,#a8dcff,#04070e">
       <a href="https://lumen-sentinel.vercel.app/" target="_blank" rel="noopener">Lumen Sentinel</a>
       <p>Enterprise security that reads like a luxury good. Endpoint, network, identity and threat horizon.</p>
     </li>
-    <li data-slug="kuro" data-world="w-kuro" data-no="SIG-05"
-        data-tag="Tattoo studio · irezumi × neo-Tokyo"
-        data-pal="#1c0e08,#e23b1e,#e8ddd2">
+    <li data-slug="kuro" data-world="w-kuro" data-tag="Tattoo studio · irezumi × neo-Tokyo" data-pal="#1c0e08,#e23b1e,#e8ddd2">
       <a href="https://kurohebi-tattoos.vercel.app/" target="_blank" rel="noopener">Kurohebi Tattoos</a>
       <p>A Kyoto tattoo atelier set in eleven typefaces across two writing systems. Ancient ink, future skin.</p>
     </li>
-    <li data-slug="cosmic" data-world="w-cosmic" data-no="SIG-06"
-        data-tag="Strategy agency · meteor &amp; nebula"
-        data-pal="#221105,#f4934a,#0a0503">
+    <li data-slug="cosmic" data-world="w-cosmic" data-tag="Strategy agency · meteor &amp; nebula" data-pal="#221105,#f4934a,#0a0503">
       <a href="https://cosmicsolutions.vercel.app" target="_blank" rel="noopener">Cosmic Solutions</a>
       <p>Strategy written in the stars — a consultancy charting the path between the artifact and the orbit.</p>
     </li>
-    <li data-slug="" data-world="w-next" data-no="SIG-∞"
-        data-tag="Your brand · engineered as a world"
-        data-pal="#160d2b,#7c5cff,#0a0a18">
+    <li data-slug="cork" data-world="w-cork" data-tag="Wine, beer &amp; rare spirits · a candlelit tour" data-pal="#0e0a08,#d29338,#3a2517">
+      <a href="https://cork-and-keg.vercel.app" target="_blank" rel="noopener">Cork &amp; Keg</a>
+      <p>Braselton's house of wine, beer, rare spirits and cigars. Four rooms, one obsession, built as a candlelit tour.</p>
+    </li>
+    <li data-slug="cottoncalf" data-world="w-cottoncalf" data-tag="Dry-aged steakhouse · fire, salt &amp; time" data-pal="#0b0705,#c8551e,#4a1c10">
+      <a href="https://cotton-calf-kitchen.vercel.app" target="_blank" rel="noopener">Cotton Calf Kitchen</a>
+      <p>A dry-aged steakhouse in small-town Georgia. Fire, salt and time, served on white linen.</p>
+    </li>
+    <li data-slug="threewolves" data-world="w-threewolves" data-tag="Campaign · one red field" data-pal="#060302,#e01b24,#0a0505">
+      <a href="https://three-wolves.vercel.app" target="_blank" rel="noopener">Three Wolves</a>
+      <p>Fury. Hunger. Silence. A campaign built on one red field and the wolf you choose to feed.</p>
+    </li>
+    <li data-slug="holt" data-world="w-holt" data-live="0" data-tag="Icelandic estate · scroll-scrubbed film" data-pal="#05060a,#6eb86a,#123018">
+      <a href="#constellation">HOLT</a>
+      <p>A solitary estate at 64°N. The hero is a scroll-scrubbed film of the Icelandic highlands, decoded frame by frame.</p>
+    </li>
+    <li data-slug="colorstorm" data-world="w-colorstorm" data-live="0" data-tag="Streetwear · drawn by a nine-year-old" data-pal="#0e0e10,#e83e8c,#f5c518">
+      <a href="#constellation">Colorstorm</a>
+      <p>Streetwear drawn by a nine-year-old, treated with exactly the seriousness it deserves. Wear the storm.</p>
+    </li>
+    <li data-slug="fade" data-world="w-fade" data-tag="Barbershop · booking &amp; product shelf" data-pal="#0b0b0c,#b9975b,#2a2622">
+      <a href="https://fade-avenue.vercel.app" target="_blank" rel="noopener">Fade Avenue</a>
+      <p>A Hattiesburg barbershop with online booking, a product shelf, and a cart that actually behaves.</p>
+    </li>
+    <li data-slug="equinox" data-world="w-equinox" data-tag="Local roastery · coffee, pops &amp; bubble tea" data-pal="#0c1220,#e0a85c,#1f3a5f">
+      <a href="https://equinox-coffee.vercel.app" target="_blank" rel="noopener">Equinox Coffee</a>
+      <p>Locally roasted coffee, house-made ice pops and bubble tea, in a site as warm as the room it's named after.</p>
+    </li>
+    <li data-slug="oec" data-world="w-oec" data-tag="Hibachi &amp; sushi · online ordering" data-pal="#f2efe8,#d9645c,#1fb6b6">
+      <a href="https://oec-japanese-express.vercel.app" target="_blank" rel="noopener">OEC Japanese Express</a>
+      <p>Hibachi and sushi with online ordering. Ingredients laid out like a specimen chart.</p>
+    </li>
+    <li data-slug="crab" data-world="w-crab" data-tag="Cajun seafood · pickup ordering" data-pal="#0e0e10,#e85d2f,#8c1d13">
+      <a href="https://the-crab-house.vercel.app" target="_blank" rel="noopener">The Crab House</a>
+      <p>Cajun seafood and hot wings, ordered for pickup without a single dead end in the flow.</p>
+    </li>
+    <li data-slug="jerrys" data-world="w-jerrys" data-tag="Repair shop · rebuilt from an ageing PHP site" data-pal="#0e0e10,#c1121f,#1a1a1c">
+      <a href="https://jerrys-automotive.vercel.app" target="_blank" rel="noopener">Jerry's Automotive</a>
+      <p>A long-standing repair shop rebuilt from an ageing PHP site, with the focus moved back onto the work.</p>
+    </li>
+    <li data-slug="kaylee" data-world="w-kaylee" data-live="0" data-tag="Designer's portfolio · stark black &amp; white" data-pal="#ededed,#d91e18,#000000">
+      <a href="#constellation">Kaylee Design Studio</a>
+      <p>A designer's portfolio in stark black and white — condensed headlines, and nothing in the way of the work.</p>
+    </li>
+    <li data-slug="" data-world="w-next" data-tag="Your brand · engineered as a world" data-pal="#160d2b,#7c5cff,#0a0a18">
       <a href="#signal">Open a channel</a>
       <p>A new transmission begins here. Your world, next.</p>
     </li>
@@ -1050,9 +1083,14 @@ var orrOn    = !!(conWrap && orrRing && orrIndex);
 
 if(orrOn){ document.documentElement.classList.add("js"); }
 
-var WORLDS = orrOn ? Array.prototype.map.call(orrIndex.children, function(li, i){
+var WORLDS = orrOn ? Array.prototype.map.call(orrIndex.children, function(li, i, all){
   var a = li.querySelector("a");
-  return { i:i, slug:li.dataset.slug, world:li.dataset.world, no:li.dataset.no,
+  var last = (i === all.length - 1);
+  return { i:i, slug:li.dataset.slug, world:li.dataset.world,
+           /* numbered from the list, so adding a project never means
+              renumbering seventeen data attributes by hand */
+           no: last ? "SIG-∞" : "SIG-" + (i + 1 < 10 ? "0" : "") + (i + 1),
+           live: li.dataset.live !== "0",
            tag:li.dataset.tag, pal:li.dataset.pal.split(","),
            name:a.textContent.trim(), href:a.getAttribute("href"),
            note:li.querySelector("p").textContent.trim() };
@@ -1086,16 +1124,24 @@ if(orrOn){
     el.style.setProperty("--i", i);
     el.style.setProperty("--wa", w.pal[1]);
     if(w.slug){
+      /* Seventeen plates is 152KB. Loading them all at parse time makes the
+         hero compete with images nine screens away; leaving them lazy means
+         a face can still be decoding at the instant the body turns onto it,
+         which is the one moment the section is asking to be looked at.
+         So: the first three are eager, and the rest are fetched together as
+         soon as the section comes within a couple of screens — long before
+         any of them reaches the front. */
+      var eager = i < 3;
       el.innerHTML =
         '<span class="oface-plate">' +
-          /* Not lazy. All six plates together are 45KB, and a face that
-             hasn't loaded yet pops in as the body turns onto it — which is
-             the one moment the section is asking to be looked at. Trading a
-             visible pop for 45KB of deferral is a bad deal. */
-          '<img alt="" decoding="async"' +
-            ' src="assets/shots/sm/' + w.slug + '.webp"' +
-            ' srcset="assets/shots/sm/' + w.slug + '.webp 480w, assets/shots/md/' + w.slug + '.webp 960w"' +
-            ' sizes="(max-width:900px) 78vw, 32vw" width="480" height="300">' +
+          '<img alt="" decoding="async" width="480" height="300"' +
+            ' sizes="(max-width:900px) 78vw, 32vw"' +
+            (eager
+              ? ' src="assets/shots/sm/' + w.slug + '.webp"' +
+                ' srcset="assets/shots/sm/' + w.slug + '.webp 480w, assets/shots/md/' + w.slug + '.webp 960w"'
+              : ' data-src="assets/shots/sm/' + w.slug + '.webp"' +
+                ' data-srcset="assets/shots/sm/' + w.slug + '.webp 480w, assets/shots/md/' + w.slug + '.webp 960w"') +
+            '>' +
           '<span class="oface-scrim"></span>' +
           '<span class="oface-cap"><b>' + w.name + '</b><span>' + w.no + '</span></span>' +
         '</span>';
@@ -1111,6 +1157,21 @@ if(orrOn){
   });
 }
 
+/* pull in every deferred plate at once, well before the ring reaches it */
+var oPreloaded = false;
+function orrPreload(){
+  if(oPreloaded) return;
+  oPreloaded = true;
+  for(var i=0;i<ofaces.length;i++){
+    var img = ofaces[i].querySelector("img[data-src]");
+    if(!img) continue;
+    img.srcset = img.dataset.srcset;
+    img.src = img.dataset.src;
+    img.removeAttribute("data-src");
+    img.removeAttribute("data-srcset");
+  }
+}
+
 /* ---- sizing, recomputed only on resize ---- */
 var oFW = 0, oFH = 0, oRAD = 0, oTop = 0, oLen = 1, oPer = 1;
 function orrSize(){
@@ -1123,10 +1184,11 @@ function orrSize(){
   orrStage.style.setProperty("--ofw", oFW + "px");
   orrStage.style.setProperty("--ofh", oFH + "px");
   orrStage.style.setProperty("--orad", oRAD + "px");
-  /* Seven sides is a chunky solid, but the camera still has to come in close
-     enough that the neighbouring faces visibly recede — otherwise the whole
-     thing reads as a flat row of thumbnails. */
-  orrStage.style.setProperty("--opersp", Math.round(oRAD * 1.15) + "px");
+  /* The more faces, the closer together they sit in angle and the less each
+     one recedes on its own — eighteen sides is very nearly a cylinder. So the
+     camera comes in as the count goes up, otherwise the body reads as a flat
+     row of thumbnails instead of one solid turning. */
+  orrStage.style.setProperty("--opersp", Math.round(oRAD * (ON >= 12 ? 0.95 : 1.15)) + "px");
 }
 function orrLayout(){
   if(!orrOn) return;
@@ -1140,7 +1202,7 @@ function orrLayout(){
      drives the rotation would just be an empty screen and a half of nothing.
      Let the section be as tall as its contents. */
   if(reduced){ conWrap.style.height = ""; orrBounds(); return; }
-  oPer = Math.round(window.innerHeight * (window.innerWidth < 900 ? 0.58 : 0.68));
+  oPer = Math.round(window.innerHeight * (window.innerWidth < 900 ? 0.46 : 0.55));
   conWrap.style.height = (oPer * (ON - 1) + window.innerHeight * 1.05 + window.innerHeight) + "px";
   orrBounds();
 }
@@ -1160,6 +1222,8 @@ if(orrOn){
   odTag   = document.querySelector(".od-tag");
   odVisit = document.getElementById("orrVisit");
   oCount  = document.querySelector(".orr-count b");
+  var oTot = document.querySelector(".orr-count i");
+  if(oTot) oTot.textContent = "/" + (ON < 10 ? "0" : "") + ON;
   oTicks  = document.querySelector(".orr-rose-t");
 }
 
@@ -1192,9 +1256,17 @@ function orrSetLive(i){
   odNo.textContent = w.no;
   odName.textContent = w.name;
   odTag.textContent = w.tag;
-  odVisit.href = w.href;
-  odVisit.setAttribute("aria-label", "Visit " + w.name + (w.slug ? " (opens in a new tab)" : ""));
-  odVisit.target = w.slug ? "_blank" : "";
+  /* Built but not currently deployed: show the work, drop the button. A
+     visit link that goes nowhere is worse than no visit link. */
+  if(w.live){
+    odVisit.hidden = false;
+    odVisit.href = w.href;
+    odVisit.target = w.slug ? "_blank" : "";
+    odVisit.setAttribute("aria-label", "Visit " + w.name + (w.slug ? " (opens in a new tab)" : ""));
+  } else {
+    odVisit.hidden = true;
+    odVisit.removeAttribute("href");
+  }
   oCount.textContent = (i + 1 < 10 ? "0" : "") + (i + 1);
   for(var k=0;k<oTicks.children.length;k++) oTicks.children[k].classList.toggle("on", k === i);
   if(!reduced){
@@ -1345,6 +1417,9 @@ function orrOpenWorld(i){
   oview.querySelector(".oc-note").textContent = w.note;
   oview.querySelector(".oview-pal").innerHTML = w.pal.map(function(c){ return '<span style="background:' + c + '"></span>'; }).join("");
   var go = oview.querySelector(".oview-go");
+  /* same rule as the dossier: no live URL, no button */
+  if(w.live){ go.hidden = false; go.href = w.href; }
+  else { go.hidden = true; go.removeAttribute("href"); }
   go.href = w.href; go.style.setProperty("--wa", w.pal[1]);
   oview.style.setProperty("--wa", w.pal[1]);
   oview.hidden = false;
@@ -1411,6 +1486,7 @@ function orrTick(now){
   if(!orrOn) return;
   if(oTween) oTween(now);
   var y = window.scrollY;
+  if(y > oTop - window.innerHeight * 2) orrPreload();
   oInside = y > oTop - window.innerHeight * 0.5 && y < oTop + oLen + window.innerHeight * 0.5;
   if(!oInside) return;
   var target = orrTargetFor(y);
