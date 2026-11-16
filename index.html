@@ -72,6 +72,41 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 .vignette{position:fixed;inset:0;z-index:2;pointer-events:none;
   background:radial-gradient(ellipse at 50% 42%, transparent 52%, rgba(3,4,9,.55) 100%)}
 
+/* ---------- the film ----------
+   When WebGL2 is there, one canvas carries the whole sky: the ray-traced
+   singularity, the lensed star field, the nebula, the grade. The 2D canvases
+   and the CSS nebulae are the fallback, and they step aside. */
+#film{position:fixed;left:0;top:0;z-index:0;display:none;pointer-events:none}
+.gl #film{display:block}
+.gl #stars,.gl #relic,.gl .nebulae,.gl .vignette,.gl .hero-orbit{display:none}
+
+/* a subtitle halo: copy carries its own shadow, so it reads over the disk */
+.gl .hero-sub,.gl .m-copy,.gl .force .fd,.gl .sig-copy,.gl .eyebrow,.gl .hero-tag,.gl .voice cite,
+.gl .sig-coord,.gl .con-hint,.gl .link-line,.gl footer{
+  text-shadow:0 0 9px rgba(3,4,9,.92),0 0 24px rgba(3,4,9,.8)}
+.gl .h-display,.gl .force .ft,.gl .voice blockquote{text-shadow:0 0 30px rgba(3,4,9,.6)}
+.gl .it,.gl .it *,.gl .it-teal,.gl .it-teal *{text-shadow:none}
+.gl .it{filter:drop-shadow(0 0 20px rgba(124,92,255,.38))}
+.gl .it-teal{filter:drop-shadow(0 0 20px rgba(92,140,255,.36))}
+
+/* the gate opens: 2.39:1 until the singularity has formed */
+.bars i{position:fixed;left:0;right:0;height:13svh;background:#000;z-index:80;pointer-events:none;
+  transition:transform 1.9s var(--ease)}
+.bars i:first-child{top:0;transform-origin:50% 0}
+.bars i:last-child{bottom:0;transform-origin:50% 100%}
+body.ready .bars i{transform:scaleY(0)}
+
+/* viewfinder marks */
+.marks{position:fixed;inset:12px;z-index:59;pointer-events:none;opacity:0;transition:opacity 1.6s var(--ease) .6s}
+body.ready .marks{opacity:1}
+.marks i{position:absolute;width:11px;height:11px;border:0 solid rgba(201,212,255,.26)}
+.marks i:nth-child(1){left:0;top:0;border-left-width:1px;border-top-width:1px}
+.marks i:nth-child(2){right:0;top:0;border-right-width:1px;border-top-width:1px}
+.marks i:nth-child(3){left:0;bottom:0;border-left-width:1px;border-bottom-width:1px}
+.marks i:nth-child(4){right:0;bottom:0;border-right-width:1px;border-bottom-width:1px}
+@media(max-width:900px){.marks{display:none}}
+@media(prefers-reduced-motion:reduce){.bars{display:none}}
+
 /* ---------- boot / the forming singularity ----------
    No text, no numbers: the black hole alone is the loading page,
    its progress arc the only indicator — and it never leaves the screen. */
@@ -94,6 +129,25 @@ body.ready .hud{opacity:1}
 .hud-avail i{width:6px;height:6px;border-radius:50%;background:var(--violet);
   box-shadow:0 0 12px 2px rgba(124,92,255,.7);animation:pulse 2.4s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.hud-right{display:flex;align-items:center;gap:clamp(14px,2.4vw,30px)}
+.av-s{display:none}
+/* sound: off until asked for — a synthesised room tone, no file behind it */
+.hud-snd{display:flex;align-items:center;gap:10px;pointer-events:auto;letter-spacing:inherit;
+  text-transform:inherit;color:var(--dim);transition:color .35s;padding:6px 0}
+.hud-snd:hover,.snd-on .hud-snd{color:var(--mist)}
+.hud-snd b{font-weight:400;color:var(--ice)}
+.eq{display:flex;align-items:flex-end;gap:2px;height:10px}
+.eq i{width:1px;height:100%;background:currentColor;transform:scaleY(.22);transform-origin:50% 100%}
+.snd-on .eq i{background:var(--violet);animation:eq 1.15s ease-in-out infinite}
+.eq i:nth-child(2){animation-delay:-.42s}.eq i:nth-child(3){animation-delay:-.78s}.eq i:nth-child(4){animation-delay:-.2s}
+@keyframes eq{0%,100%{transform:scaleY(.22)}50%{transform:scaleY(1)}}
+@media(max-width:640px){
+  /* brand + status ran wider than a 375px screen and pushed the layout
+     viewport out with them */
+  .hud-brand b{letter-spacing:.2em}
+  .hud-brand{gap:10px}
+  .av-l,.snd-l{display:none}.av-s{display:inline}
+}
 .hud-bl{left:var(--pad);bottom:clamp(16px,2.6vw,26px);line-height:1.9}
 .hud-bl b{color:var(--ice);font-weight:400}
 .hud-br{right:var(--pad);bottom:clamp(16px,2.6vw,26px);text-align:right}
@@ -200,6 +254,7 @@ main{position:relative;z-index:10}
 .btn:hover::before{opacity:1;transform:scale(1)}
 .btn .arr{transition:transform .4s var(--ease)}
 .btn:hover .arr{transform:translateY(3px)}
+.btn{transition:border-color .4s,color .4s,transform .6s var(--ease)}
 .link-line{position:relative;font-family:var(--mono);font-size:11px;letter-spacing:.26em;
   text-transform:uppercase;color:var(--mist);padding-bottom:6px;transition:color .35s}
 .link-line::after{content:"";position:absolute;left:0;bottom:0;height:1px;width:100%;
@@ -304,9 +359,18 @@ main{position:relative;z-index:10}
   position:absolute;inset:0;overflow:hidden;border-radius:10px;
   border:1px solid var(--line-soft);
   background:var(--void-2);
-  transition:border-color .5s var(--ease);
+  transition:border-color .5s var(--ease),box-shadow .7s var(--ease);
 }
-.oface.live .oface-plate{border-color:var(--wa,var(--violet))}
+.oface.live .oface-plate{border-color:var(--wa,var(--violet));
+  box-shadow:0 34px 110px -34px color-mix(in srgb,var(--wa,var(--violet)) 80%,transparent),
+             0 0 0 1px color-mix(in srgb,var(--wa,var(--violet)) 30%,transparent)}
+/* a pass of light across the plate as it arrives at the front */
+.oface-plate::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(105deg,transparent 38%,rgba(255,255,255,.16) 50%,transparent 62%);
+  transform:translateX(-130%)}
+.oface.live .oface-plate::after{animation:sheen 1.2s var(--ease) .12s 1}
+@keyframes sheen{to{transform:translateX(130%)}}
+@media(prefers-reduced-motion:reduce){.oface.live .oface-plate::after{animation:none}}
 .oface-plate img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 0}
 .oface-scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,6,12,.06),rgba(5,6,12,.66))}
 .oface-cap{
@@ -381,6 +445,9 @@ main{position:relative;z-index:10}
 }
 .orr-count b{display:block;font-size:clamp(12px,1.4vmin,15px);font-weight:400;color:var(--ice);letter-spacing:.1em}
 .orr-count i{font-style:normal;font-size:8.5px;letter-spacing:.2em;color:var(--dim)}
+
+/* clear of the HUD readouts in the bottom corners */
+@media(min-width:901px){.orr-dossier,.orr-rose{bottom:clamp(88px,12vh,116px)}}
 
 .con-hint{padding:0 var(--pad);margin-top:26px;font-family:var(--mono);font-size:10px;
   letter-spacing:.3em;text-transform:uppercase;color:var(--dim);transition:opacity .6s}
@@ -510,6 +577,7 @@ footer .f-note{font-family:var(--mono);font-size:9.5px;letter-spacing:.22em;
 <!-- boot: nothing but the singularity itself -->
 
 <!-- backdrop -->
+<canvas id="film" aria-hidden="true"></canvas>
 <canvas id="stars"></canvas>
 <div class="nebulae" aria-hidden="true">
   <div class="nebula nebula-a"></div>
@@ -519,6 +587,8 @@ footer .f-note{font-family:var(--mono);font-size:9.5px;letter-spacing:.22em;
 <canvas id="relic" aria-hidden="true"></canvas>
 <div class="vignette" aria-hidden="true"></div>
 <div class="grain" aria-hidden="true"></div>
+<div class="bars" aria-hidden="true"><i></i><i></i></div>
+<div class="marks" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
 
 <!-- cursor -->
 <div class="cursor" aria-hidden="true"></div>
@@ -530,11 +600,18 @@ footer .f-note{font-family:var(--mono);font-size:9.5px;letter-spacing:.22em;
     <img src="assets/logo-64.webp" width="64" height="36" decoding="async" alt="Astroh Atelier">
     <b>ASTROH&nbsp;ATELIER</b>
   </a>
-  <div class="hud-avail"><i></i>Available for projects</div>
+  <div class="hud-right">
+    <button class="hud-snd" id="sndBtn" type="button" aria-pressed="false" aria-label="Ambient sound" data-hover>
+      <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+      <span class="snd-l">Sound <b id="sndState">Off</b></span>
+    </button>
+    <div class="hud-avail"><i></i><span class="av-l">Available for projects</span><span class="av-s">Available</span></div>
+  </div>
 </header>
 <div class="hud hud-bl" aria-hidden="true">
   RA <b id="hudRA">17h 22m</b><br>
-  DEC <b id="hudDEC">+38° 47′</b>
+  DEC <b id="hudDEC">+38° 47′</b><br>
+  TC <b id="hudTC">00:00:00:00</b>
 </div>
 <div class="hud hud-br" aria-hidden="true">
   Depth <b id="hudDepth">0.00</b> LY
@@ -887,16 +964,548 @@ if(reduced){
   setTimeout(igniteBoot, 4500); /* hard failsafe */
 }
 
+/* ============ the film — a singularity traced ray by ray ============
+   WebGL2. Every pixel fires a photon backwards from the camera and bends it
+   through a Schwarzschild field, so the Einstein ring, the far side of the
+   disk arching over the shadow and the lensed sky are not drawn — they fall
+   out of the integration. The frame is then graded like footage: HDR bloom,
+   an anamorphic streak, spectral fringing, a shockwave that refracts the
+   plate, grain.
+
+   The scene is traced into a half-float target sized to a pixel budget, not
+   to the window, and that budget moves with the measured frame time — so a
+   4K panel and a phone both get the picture they can hold at full rate.
+   No WebGL2, no float targets, or a GPU that still can't keep up, and none
+   of this exists: the 2D renderer further down takes over. ?nogl forces it. */
+var cine = null, fdt = 1, cineLost = null;
+function initCine(){
+  var el = document.getElementById("film");
+  if(!el || /[?&]nogl\b/.test(location.search)) return null;
+  var gl = el.getContext("webgl2", { alpha:false, antialias:false, depth:false, stencil:false,
+    powerPreference:"high-performance", failIfMajorPerformanceCaveat:true });
+  if(!gl) return null;
+  if(!gl.getExtension("EXT_color_buffer_float") && !gl.getExtension("EXT_color_buffer_half_float")) return null;
+  var lite = smallScreen || !finePointer;
+
+  var VS = "#version 300 es\nvoid main(){vec2 p=vec2(float((gl_VertexID<<1)&2),float(gl_VertexID&2));gl_Position=vec4(p*2.-1.,0.,1.);}";
+  var HEAD = "#version 300 es\nprecision highp float;\nout vec4 o;\n";
+  var HASH = `
+float h12(vec2 p){vec3 q=fract(vec3(p.xyx)*.1031);q+=dot(q,q.yzx+33.33);return fract((q.x+q.y)*q.z);}
+float h13(vec3 p){p=fract(p*.1031);p+=dot(p,p.zyx+31.32);return fract((p.x+p.y)*p.z);}
+vec3 h33(vec3 p){p=fract(p*vec3(.1031,.1030,.0973));p+=dot(p,p.yxz+33.33);return fract((p.xxy+p.yxx)*p.zyx);}`;
+
+  /* ---- the plate: geodesics, disk, sky ---- */
+  var FS_SCENE = HEAD + "#define STEPS " + (lite ? 64 : 100) + "\n#define OCT " + (lite ? 3 : 4) + "\n" + (lite ? "" : "#define RICH\n") + HASH + `
+uniform vec3 uBH,uRo,uTint;uniform mat3 uCam,uSky;uniform vec4 uCur;
+uniform float uF,uTime,uDisk,uGa,uNeb,uTintA;
+const float RIN=3.,ROUT=8.8;
+float vn(vec3 x){vec3 i=floor(x),f=fract(x);f=f*f*(3.-2.*f);
+  return mix(mix(mix(h13(i),h13(i+vec3(1,0,0)),f.x),mix(h13(i+vec3(0,1,0)),h13(i+vec3(1,1,0)),f.x),f.y),
+             mix(mix(h13(i+vec3(0,0,1)),h13(i+vec3(1,0,1)),f.x),mix(h13(i+vec3(0,1,1)),h13(i+vec3(1,1,1)),f.x),f.y),f.z);}
+float fbm(vec3 p){float a=.5,s=0.;for(int i=0;i<OCT;i++){s+=a*vn(p);p=p*2.03+vec3(11.3,4.7,7.1);a*=.5;}return s;}
+/* value noise that wraps in x, so the disk has no seam where the angle does */
+float vnw(vec2 x,float per){vec2 i=floor(x),f=fract(x);f=f*f*(3.-2.*f);
+  float x0=mod(i.x,per),x1=mod(i.x+1.,per);
+  return mix(mix(h12(vec2(x0,i.y)),h12(vec2(x1,i.y)),f.x),mix(h12(vec2(x0,i.y+1.)),h12(vec2(x1,i.y+1.)),f.x),f.y);}
+float dnoise(float r,float a){
+  float u=a*.1591549,s=0.,am=.5,ka=5.,kr=1.9;
+  for(int i=0;i<4;i++){s+=am*vnw(vec2(u*ka,r*kr),ka);ka*=2.;kr*=2.3;am*=.5;}
+  return s/.9375;}
+vec3 star(vec3 d,float S,float px,float keep,float gain){
+  vec3 p=d*S,ip=floor(p),fp=p-ip;
+  vec3 h=h33(ip),sp=.25+.5*h33(ip+31.7);
+  float sz=clamp(px*S/uF,.03,.24);
+  float dd=length(fp-sp)/sz;
+  float b=(pow(h.x,8.)*4.+h.x*h.x*.10+.012)*gain*step(fract(h.y*13.7),keep);
+  float tw=.8+.2*sin(uTime*(.8+h.y*2.6)+h.z*50.);
+  vec3 tint=mix(vec3(.70,.79,1.),vec3(1.,.84,.70),smoothstep(.6,1.,h.z));
+  return tint*b*tw*exp(-dd*dd*1.6);}
+vec3 sky(vec3 d,float boost){
+  d=uSky*d;
+  float gy=dot(d,vec3(.2414,.9656,.0966));
+  float band=exp(-gy*gy*5.);
+  vec3 w=d*1.55;
+  float q=fbm(w+vec3(3.1,1.7,8.4));
+  float n=fbm(w*1.7+2.3*q+vec3(0.,uTime*.006,0.));
+  float cloud=smoothstep(.50,.92,n);
+  float dens=cloud*(.10+.90*band);
+  float hue=vn(d*1.3+vec3(7.7,2.3,5.9));
+  vec3 nc=mix(vec3(.09,.06,.34),vec3(.32,.15,.74),smoothstep(.3,.7,hue));
+  nc=mix(nc,vec3(.10,.28,.66),smoothstep(.52,.80,q)*.75);
+  nc=mix(nc,vec3(.66,.20,.70),smoothstep(.66,.92,n)*.85);
+  nc=mix(nc,uTint,uTintA*.55);
+  vec3 c=nc*dens*uNeb*(.46+boost*.85);
+  c+=mix(vec3(.010,.008,.030),uTint*.03,uTintA*.5)*band*(.5+boost);
+#ifdef RICH
+  float dust=smoothstep(.46,.72,fbm(d*4.1+vec3(2.,9.,4.)))*band;
+  c*=1.-.55*dust;
+  vec3 st=star(d,34.,1.15,.8,1.)+star(d,88.,.85,.22,.6)+star(d,171.,.7,.07,.45);
+  st*=1.-.8*dust;
+#else
+  vec3 st=star(d,34.,1.15,.8,1.)+star(d,96.,.9,.2,.6);
+#endif
+  return c+st*(.55+1.1*band);}
+/* one crossing of the disk plane: emission and occlusion, front to back */
+void shade(vec3 c,vec3 v,inout vec3 col,inout float A){
+  float r=length(c.xz);
+  if(r<RIN*.9||r>ROUT)return;
+  float x=(r-RIN)/(ROUT-RIN);
+  float ang=atan(c.z,c.x);
+  /* differential rotation without the texture winding itself to noise:
+     two copies half a cycle apart, each faded out as it resets */
+  float om=5.2*pow(r,-1.5),ph=uDisk/8.;
+  float f1=fract(ph),f2=fract(ph+.5),base=ang+uDisk*.06;
+  float nz=mix(dnoise(r,base+om*(f1-.5)*8.),dnoise(r+31.7,base+om*(f2-.5)*8.),abs(2.*f1-1.));
+  float fil=smoothstep(.28,.78,nz);
+  fil*=.72+.28*sin(r*11.+nz*9.);
+  float edge=smoothstep(RIN*.9,RIN*1.1,r)*smoothstep(1.,.35,x);
+  float dens=edge*(.20+.95*fil*(.4+.6*fil));
+  /* gas on a Keplerian orbit: Doppler beaming and gravitational redshift */
+  vec3 vg=normalize(vec3(c.z,0.,-c.x));
+  float beta=sqrt(.5/r);
+  float g=sqrt(1.-beta*beta)/(1.-beta*dot(vg,-normalize(v)))*sqrt(1.-1./r);
+  g=mix(1.,g,.78);
+  float T=pow(RIN/r,.75)*g;
+  vec3 e=mix(vec3(.50,.10,.62),vec3(.40,.28,1.),smoothstep(.26,.52,T));
+  e=mix(e,vec3(.56,.67,1.),smoothstep(.48,.80,T));
+  e=mix(e,vec3(.96,.97,1.),smoothstep(.78,1.22,T));
+  e=mix(e,uTint,uTintA*.4*(1.-smoothstep(.6,1.1,T)));
+  float I=pow(RIN/r,2.6)*g*g*g*dens*uGa*5.2;
+  col+=(1.-A)*e*I;
+  A+=(1.-A)*clamp(dens*1.3,0.,.97);}
+void main(){
+  vec3 v=normalize(uCam*vec3(gl_FragCoord.xy-uBH.xy,uF));
+  vec3 p=uRo;
+  vec3 hv=cross(p,v);float h2=dot(hv,hv);
+  vec3 c0=vec3(0.),c1=c0,c2=c0,v0=c0,v1=c0,v2=c0;int n=0;bool cap=false;
+  /* the loop only bends the ray and notes where it met the disk plane;
+     shading happens after, so the body stays small enough to compile fast */
+  for(int i=0;i<STEPS;i++){
+    float r2=dot(p,p);
+    if(r2<1.){cap=true;break;}
+    float r=sqrt(r2);
+    float dt=clamp(r*.1,.05,3.5);
+    v-=1.5*h2*p/(r2*r2*r)*dt;
+    vec3 pn=p+v*dt;
+    if(p.y*pn.y<0.){
+      vec3 c=mix(p,pn,p.y/(p.y-pn.y));
+      if(n==0){c0=c;v0=v;}else if(n==1){c1=c;v1=v;}else if(n==2){c2=c;v2=v;}
+      n++;
+    }
+    p=pn;
+    if(r2>1100.&&dot(p,v)>0.)break;
+  }
+  vec3 col=vec3(0.);float A=0.;
+  if(n>0)shade(c0,v0,col,A);
+  if(n>1)shade(c1,v1,col,A);
+  if(n>2)shade(c2,v2,col,A);
+  if(!cap&&A<.99){
+    vec2 dc=gl_FragCoord.xy-uCur.xy;
+    col+=(1.-A)*sky(normalize(v),uCur.z*exp(-dot(dc,dc)/(uCur.w*uCur.w)));
+  }
+  o=vec4(min(col,vec3(24.)),1.);}`;
+
+  /* ---- bloom: dual-filter down, tent up ---- */
+  var FS_DOWN = HEAD + `
+uniform sampler2D uT;uniform vec2 uPx,uInv;uniform float uThr;
+void main(){vec2 uv=gl_FragCoord.xy*uInv;
+  vec3 c=texture(uT,uv).rgb*4.+texture(uT,uv+uPx).rgb+texture(uT,uv-uPx).rgb
+        +texture(uT,uv+vec2(uPx.x,-uPx.y)).rgb+texture(uT,uv-vec2(uPx.x,-uPx.y)).rgb;
+  c*=.125;
+  if(uThr>0.){float l=max(c.r,max(c.g,c.b));c*=smoothstep(uThr-.35,uThr+.7,l);}
+  o=vec4(c,1.);}`;
+  var FS_UP = HEAD + `
+uniform sampler2D uT;uniform vec2 uPx,uInv;uniform float uK;
+void main(){vec2 uv=gl_FragCoord.xy*uInv;
+  vec3 c=texture(uT,uv+vec2(-2.*uPx.x,0.)).rgb+texture(uT,uv+vec2(2.*uPx.x,0.)).rgb
+        +texture(uT,uv+vec2(0.,2.*uPx.y)).rgb+texture(uT,uv+vec2(0.,-2.*uPx.y)).rgb
+        +2.*(texture(uT,uv+uPx).rgb+texture(uT,uv-uPx).rgb
+        +texture(uT,uv+vec2(uPx.x,-uPx.y)).rgb+texture(uT,uv-vec2(uPx.x,-uPx.y)).rgb);
+  o=vec4(c/12.*uK,1.);}`;
+  /* ---- the anamorphic streak: only the hottest light, smeared sideways ---- */
+  var FS_STREAK = HEAD + `
+uniform sampler2D uT;uniform vec2 uInv;uniform float uStep,uThr;
+void main(){vec2 uv=gl_FragCoord.xy*uInv;vec3 c=vec3(0.);
+  const float w[5]=float[5](.19,.165,.12,.075,.045);
+  for(int i=-4;i<=4;i++){
+    vec3 s=texture(uT,uv+vec2(float(i)*uStep*uInv.x,0.)).rgb;
+    s=max(s-uThr,0.);
+    c+=s*w[i<0?-i:i];}
+  o=vec4(c,1.);}`;
+
+  /* ---- the grade ---- */
+  var FS_POST = HEAD + "#define TAPS " + (lite ? 3 : 6) + "\n" + HASH + `
+uniform sampler2D uScene,uBloom,uStreak,uLogo;
+uniform vec2 uRes;uniform vec3 uBH;uniform vec4 uLg;uniform vec2 uPulse[4];
+uniform float uTime,uVel,uBoot,uArc,uLogoA,uFade,uDpr;
+vec3 aces(vec3 x){return clamp((x*(2.51*x+.03))/(x*(2.43*x+.59)+.14),0.,1.);}
+void main(){
+  vec2 f=gl_FragCoord.xy,uv=f/uRes;
+  vec2 tb=f-uBH.xy;float rb=length(tb);vec2 nb=tb/max(rb,.001);
+  /* transmission pulses: a shell of refraction moving out through the plate */
+  float disp=0.,ring=0.;
+  for(int i=0;i<4;i++){
+    float d=rb-uPulse[i].x,w=(20.+uPulse[i].x*.07)*uDpr;
+    float e=exp(-d*d/(w*w));
+    disp+=e*(d/w)*uPulse[i].y;ring+=e*e*uPulse[i].y;}
+  vec2 suv=uv-nb*disp*22.*uDpr/uRes;
+  vec2 cd=suv-.5;
+  suv=.5+cd*(1.-uVel*.035);
+  /* one set of taps does three jobs: lens fringing at rest, and under
+     speed the same taps spread into a radial warp */
+  float amt=.0022+uVel*.05;
+  float jit=h12(f+fract(uTime)*91.7)-.5;
+  vec3 col=vec3(0.),ws=vec3(0.);
+  for(int i=0;i<TAPS;i++){
+    float t=float(i)/float(TAPS-1);
+    vec3 w=max(vec3(0.),1.-abs(2.*t-vec3(0.,1.,2.)));
+    float tj=t+jit/float(TAPS)*min(1.,uVel*3.);
+    col+=texture(uScene,suv-cd*amt*(tj-.5)*2.).rgb*w;ws+=w;}
+  col/=ws;
+  vec3 bl=texture(uBloom,suv).rgb,sk=texture(uStreak,suv).rgb;
+  col+=bl*.14+sk*vec3(.36,.50,1.)*1.25;
+  col+=vec3(.42,.34,1.)*ring*.022;
+  /* boot: the progress arc, drawn in light */
+  if(uArc>0.){
+    float ar=uBH.z*1.3,dr=abs(rb-ar)/uDpr;
+    float a01=fract(atan(tb.x,tb.y)*.1591549+1.);
+    float ha=uBoot*6.2831853;
+    float hd=length(f-uBH.xy-ar*vec2(sin(ha),cos(ha)))/uDpr;
+    col+=(vec3(.79,.83,1.)*smoothstep(1.3,.2,dr)*.10
+         +vec3(.63,.53,1.)*smoothstep(1.9,.3,dr)*step(a01,uBoot)*1.5
+         +vec3(.87,.85,1.)*smoothstep(4.,.8,hd)*3.)*uArc;}
+  /* the mark at the heart of the well — full resolution, never traced */
+  vec2 l=(f-uLg.xy)/uLg.zw*.5+.5;
+  vec4 L=texture(uLogo,vec2(l.x,1.-l.y));
+  col+=L.rgb*L.a*uLogoA*1.35;
+  col=aces(col*uFade);
+  col=pow(col,vec3(.4545));
+  float lum=dot(col,vec3(.2126,.7152,.0722));
+  col=mix(col,col*vec3(.90,.95,1.10),.55*(1.-lum));
+  float vg=smoothstep(.98,.28,length((uv-.5)*vec2(1.12,1.3)));
+  col*=mix(.30,1.,vg);
+  col+=vec3(.019,.022,.045)*(1.-col);
+  float gr=h12(f+floor(uTime*24.)*vec2(37.,17.))-.5;
+  col+=gr*(.038-.022*lum);
+  o=vec4(col,1.);}`;
+
+  /* ---- foreground: the stars you are actually flying through ----
+     Instanced capsules. Depth, the lens and the motion streak are all
+     worked out in the vertex shader, so 500 of them cost one draw call. */
+  var VS_STAR = `#version 300 es
+layout(location=0) in vec2 aQ;layout(location=1) in vec4 aS;
+uniform vec2 uRes,uM;uniform vec3 uBH;uniform float uZ,uSpeed,uTime;
+out vec2 vQ;out float vA,vAsp;
+void main(){
+  float z=.05+.95*fract(aS.z-uZ),pz=z+uSpeed;
+  vec2 c=uRes*.5-uM*30.;
+  vec2 s=c+aS.xy*uRes/z*.5,q=c+aS.xy*uRes/pz*.5;
+  float tE=uBH.z*1.9;
+  vec2 d=s-uBH.xy;float rr=max(length(d),.001);vec2 u=d/rr;
+  float rp=(rr+sqrt(rr*rr+4.*tE*tE))*.5;vec2 P=uBH.xy+u*rp;
+  vec2 d2=q-uBH.xy;float r2=max(length(d2),.001);
+  vec2 Q=uBH.xy+d2/r2*(r2+sqrt(r2*r2+4.*tE*tE))*.5;
+  float depth=1.-z;
+  float mag=min(5.,min(tE*.5,120.)/((rp-tE)+6.));
+  vA=(.16+depth*.62+sin(uTime*2.+aS.w)*.08)*(1.+mag*.35)*smoothstep(1.,.86,z)*smoothstep(.05,.16,z);
+  vec2 ax=P-Q;float len=length(ax);
+  float cap=20.+uSpeed*5200.;
+  if(len>cap){Q=P-ax/len*cap;len=cap;}
+  vec2 dir=len>.001?ax/len:vec2(1.,0.);
+  if(len<1.2&&mag>2.2){dir=vec2(u.y,-u.x);len=min(12.,mag*2.4);Q=P-dir*len*.5;P=P+dir*len*.5;}
+  float w=depth*1.15+.55,hl=len*.5+w;
+  vec2 pos=(P+Q)*.5+dir*aQ.x*hl+vec2(-dir.y,dir.x)*aQ.y*w;
+  vQ=aQ;vAsp=hl/w;
+  gl_Position=vec4(pos.x/uRes.x*2.-1.,1.-pos.y/uRes.y*2.,0.,1.);}`;
+  var FS_STAR = HEAD + `
+in vec2 vQ;in float vA,vAsp;
+void main(){
+  float d=length(vec2(max(abs(vQ.x)*vAsp-(vAsp-1.),0.),vQ.y));
+  o=vec4(vec3(.80,.85,1.)*smoothstep(1.,.2,d)*min(vA,.95),1.);}`;
+
+  function sh(type, src){
+    var s = gl.createShader(type);
+    gl.shaderSource(s, src); gl.compileShader(s);
+    if(!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s));
+    return s;
+  }
+  function prog(vs, fs){
+    var p = gl.createProgram();
+    gl.attachShader(p, sh(gl.VERTEX_SHADER, vs)); gl.attachShader(p, sh(gl.FRAGMENT_SHADER, fs));
+    gl.linkProgram(p);
+    if(!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p));
+    var u = {}, n = gl.getProgramParameter(p, gl.ACTIVE_UNIFORMS);
+    for(var i=0;i<n;i++){
+      var nm = gl.getActiveUniform(p, i).name.replace(/\[0\]$/, "");
+      u[nm] = gl.getUniformLocation(p, nm);
+    }
+    return { p:p, u:u };
+  }
+  var pScene = prog(VS, FS_SCENE), pDown = prog(VS, FS_DOWN), pUp = prog(VS, FS_UP),
+      pStreak = prog(VS, FS_STREAK), pPost = prog(VS, FS_POST), pStar = prog(VS_STAR, FS_STAR);
+
+  function target(w, h){
+    var t = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, t);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA16F, w, h, 0, gl.RGBA, gl.HALF_FLOAT, null);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    var f = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, f);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, t, 0);
+    return { t:t, f:f, w:w, h:h };
+  }
+  function freeT(t){ if(t){ gl.deleteTexture(t.t); gl.deleteFramebuffer(t.f); } }
+
+  /* the mark, with its glow baked in once — a 1px transparent stand-in until it loads */
+  var logoTex = gl.createTexture(), logoAsp = 0.5625, logoPad = 1;
+  gl.bindTexture(gl.TEXTURE_2D, logoTex);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array(4));
+  function setLogo(img){
+    var lw = 512, lh = Math.round(512 * (img.naturalHeight / img.naturalWidth || 0.5625)), pad = 110;
+    var c = document.createElement("canvas");
+    c.width = lw + pad*2; c.height = lh + pad*2;
+    var g = c.getContext("2d");
+    g.shadowColor = "rgba(124,92,255,.95)"; g.shadowBlur = 54;
+    g.drawImage(img, pad, pad, lw, lh);
+    g.shadowColor = "rgba(157,180,255,.8)"; g.shadowBlur = 14;
+    g.drawImage(img, pad, pad, lw, lh);
+    gl.bindTexture(gl.TEXTURE_2D, logoTex);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, c);
+    gl.generateMipmap(gl.TEXTURE_2D);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    logoAsp = c.height / c.width; logoPad = c.width / lw;
+  }
+
+  /* star instances */
+  var SN = lite ? 240 : 560, sdat = new Float32Array(SN*4);
+  for(var i=0;i<SN;i++){
+    sdat[i*4] = Math.random()-.5; sdat[i*4+1] = Math.random()-.5;
+    sdat[i*4+2] = Math.random();  sdat[i*4+3] = Math.random()*6.283;
+  }
+  var starVAO = gl.createVertexArray();
+  gl.bindVertexArray(starVAO);
+  gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+  gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+  gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+  gl.bufferData(gl.ARRAY_BUFFER, sdat, gl.STATIC_DRAW);
+  gl.enableVertexAttribArray(1); gl.vertexAttribPointer(1, 4, gl.FLOAT, false, 0, 0);
+  gl.vertexAttribDivisor(1, 1);
+  gl.bindVertexArray(null);
+
+  var vw = 1, vh = 1, cw = 0, ch = 0, dpr = 1, scale = 1, minScale = .3, maxScale = 1;
+  var scene = null, mips = [], stA = null, stB = null;
+  function alloc(){
+    freeT(scene); mips.forEach(freeT); freeT(stA); freeT(stB);
+    var w = Math.max(16, Math.round(cw*scale)), h = Math.max(16, Math.round(ch*scale));
+    scene = target(w, h);
+    if(gl.checkFramebufferStatus(gl.FRAMEBUFFER) !== gl.FRAMEBUFFER_COMPLETE) throw new Error("no float target");
+    mips = [];
+    for(var i=0;i<5;i++){ w = Math.max(2, w>>1); h = Math.max(2, h>>1); mips.push(target(w, h)); }
+    stA = target(mips[2].w, mips[2].h); stB = target(mips[2].w, mips[2].h);
+  }
+  function resize(){
+    var nw = Math.max(1, window.innerWidth), nh = Math.max(1, window.innerHeight);
+    var nd = Math.min(window.devicePixelRatio || 1, 1.5);
+    if(nw === vw && nh === vh && nd === dpr && scene) return;
+    vw = nw; vh = nh; dpr = nd;
+    cw = Math.round(vw*dpr); ch = Math.round(vh*dpr);
+    el.width = cw; el.height = ch;
+    /* sized in the same innerWidth space the choreography works in, so the
+       well lands exactly where the DOM lens thinks it is — scrollbar or not */
+    el.style.width = vw + "px"; el.style.height = vh + "px";
+    var px = cw*ch;
+    /* open modestly and let the governor climb: a strong GPU is at full
+       budget within a few seconds, a weak one never has to stumble first */
+    scale    = Math.min(1, Math.sqrt((lite ?  300000 :  720000) / px));
+    maxScale = Math.min(1, Math.sqrt((lite ?  620000 : 2000000) / px));
+    minScale = Math.min(scale, Math.sqrt((lite ? 100000 :  220000) / px));
+    alloc();
+  }
+  resize();
+
+  /* frame-time governor */
+  var gAcc = 0, gN = 0, gGood = 0, gSlow = 0, gRaised = false, gLast = 0, gAvg = 16.7;
+  var gRef = 0, gTries = 0, gKeep = 0, gLock = false;
+  function govern(now){
+    var ms = now - gLast; gLast = now;
+    if(!(ms > 0) || ms > 120) return;          /* a tab switch is not a slow GPU */
+    gAcc += ms; gN++;
+    if(gN < 40) return;
+    gAvg = gAcc / gN; gAcc = 0; gN = 0;
+    if(gAvg > 21.5){
+      gGood = 0;
+      if(gLock) return;
+      if(scale <= minScale + .002){
+        if(gAvg > 45 && ++gSlow >= 4 && cineLost) cineLost();
+        return;
+      }
+      /* A phone in low-power mode, or a browser saving battery, runs the
+         page at 30fps whatever it is asked to draw. Shedding pixels cannot
+         fix that, so if two cuts in a row buy nothing the cuts are undone
+         and the governor stops reaching for them. */
+      if(gTries === 0){ gRef = gAvg; gKeep = scale; }
+      else if(gAvg > gRef * .93){
+        if(gTries >= 2){ scale = gKeep; gLock = true; gTries = 0; alloc(); return; }
+      } else { gTries = 0; gRef = gAvg; gKeep = scale; }
+      gTries++;
+      if(gRaised) maxScale = Math.max(minScale, scale * .9);
+      scale = Math.max(minScale, Math.min(maxScale, scale * (gAvg > 30 ? .72 : .86)));
+      gRaised = false; alloc();
+    } else if(gAvg < 17.7){
+      gSlow = 0; gTries = 0;
+      if(++gGood >= 4 && scale < maxScale - .01){
+        scale = Math.min(maxScale, scale * 1.12);
+        gRaised = true; gGood = 0; alloc();
+      }
+    }
+  }
+
+  function pass(p, dst, w, h){
+    gl.bindFramebuffer(gl.FRAMEBUFFER, dst);
+    gl.viewport(0, 0, w, h);
+    gl.useProgram(p.p);
+  }
+  function tex(unit, t, loc){
+    gl.activeTexture(gl.TEXTURE0 + unit);
+    gl.bindTexture(gl.TEXTURE_2D, t);
+    gl.uniform1i(loc, unit);
+  }
+  function tri(){ gl.drawArrays(gl.TRIANGLES, 0, 3); }
+
+  var tSec = 0, diskT = 0, starZ = 0, m3 = new Float32Array(9), pz = new Float32Array(8);
+  gl.disable(gl.DEPTH_TEST);
+  gl.blendFunc(gl.ONE, gl.ONE);
+
+  /* S: where the well is on screen (CSS px), how it is posed, and the grade */
+  function draw(S, now){
+    if(!S.still){
+      govern(now);
+      tSec += 0.016 * S.dt;
+      diskT += 0.0068 * S.spd * S.dt;
+      starZ += (0.0016 + S.vel * 0.012) * S.dt;
+    }
+    var u, k = scene.w / vw, i;
+
+    /* --- trace --- */
+    gl.disable(gl.BLEND);
+    gl.bindVertexArray(null);
+    pass(pScene, scene.f, scene.w, scene.h); u = pScene.u;
+    /* The camera never moves the hole off its optical axis: the hole sits
+       wherever the page wants it and the frustum is sheared to match, the
+       way a view camera shifts its lens. Distance is solved from the shadow
+       size the choreography asked for. */
+    var F = 0.9 * vh, D = F * 2.598 / S.R;
+    var inc = Math.asin(Math.min(.95, Math.max(.02, S.tilt * .6)));   /* nearer edge-on than the 2D disk: that is where the lensed arc lives */
+    var si = Math.sin(inc), ci = Math.cos(inc), cr = Math.cos(S.rot), sr = Math.sin(S.rot);
+    m3[0] = cr;  m3[1] = sr*ci;  m3[2] = sr*si;          /* right */
+    m3[3] = -sr; m3[4] = cr*ci;  m3[5] = cr*si;          /* up */
+    m3[6] = 0;   m3[7] = -si;    m3[8] = ci;             /* forward */
+    gl.uniformMatrix3fv(u.uCam, false, m3);
+    gl.uniform3f(u.uRo, 0, D*si, -D*ci);
+    gl.uniform3f(u.uBH, S.cx*k, (vh - S.cy)*k, S.R*k);
+    gl.uniform1f(u.uF, F*k);
+    var cyw = Math.cos(S.yaw), syw = Math.sin(S.yaw), cp = Math.cos(S.pitch), sp = Math.sin(S.pitch);
+    m3[0] = cyw;    m3[1] = 0;   m3[2] = -syw;
+    m3[3] = syw*sp; m3[4] = cp;  m3[5] = cyw*sp;
+    m3[6] = syw*cp; m3[7] = -sp; m3[8] = cyw*cp;
+    gl.uniformMatrix3fv(u.uSky, false, m3);
+    gl.uniform1f(u.uTime, tSec); gl.uniform1f(u.uDisk, diskT);
+    gl.uniform1f(u.uGa, S.ga); gl.uniform1f(u.uNeb, S.neb);
+    gl.uniform3f(u.uTint, S.tint[0], S.tint[1], S.tint[2]); gl.uniform1f(u.uTintA, S.tintA);
+    gl.uniform4f(u.uCur, S.mxp*k, (vh - S.myp)*k, S.curA, 230*k);
+    tri();
+
+    /* --- bloom down --- */
+    gl.useProgram(pDown.p); u = pDown.u;
+    var src = scene;
+    for(i=0;i<mips.length;i++){
+      var m = mips[i];
+      gl.bindFramebuffer(gl.FRAMEBUFFER, m.f); gl.viewport(0, 0, m.w, m.h);
+      tex(0, src.t, u.uT);
+      gl.uniform2f(u.uPx, 1/src.w, 1/src.h); gl.uniform2f(u.uInv, 1/m.w, 1/m.h);
+      gl.uniform1f(u.uThr, i === 0 ? .85 : 0);
+      tri(); src = m;
+    }
+    /* --- streak, off the 1/8 level before the up-chain writes into it --- */
+    pass(pStreak, stA.f, stA.w, stA.h); u = pStreak.u;
+    gl.uniform2f(u.uInv, 1/stA.w, 1/stA.h);
+    tex(0, mips[2].t, u.uT); gl.uniform1f(u.uStep, 1.6); gl.uniform1f(u.uThr, 1.1); tri();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, stB.f);
+    tex(0, stA.t, u.uT); gl.uniform1f(u.uStep, 4.2); gl.uniform1f(u.uThr, 0); tri();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, stA.f);
+    tex(0, stB.t, u.uT); gl.uniform1f(u.uStep, 10.5); tri();
+    /* --- bloom up, each level added into the one above --- */
+    gl.enable(gl.BLEND);
+    gl.useProgram(pUp.p); u = pUp.u;
+    for(i=mips.length-1;i>0;i--){
+      var a = mips[i], b = mips[i-1];
+      gl.bindFramebuffer(gl.FRAMEBUFFER, b.f); gl.viewport(0, 0, b.w, b.h);
+      tex(0, a.t, u.uT);
+      gl.uniform2f(u.uPx, .5/a.w, .5/a.h); gl.uniform2f(u.uInv, 1/b.w, 1/b.h);
+      gl.uniform1f(u.uK, 1);
+      tri();
+    }
+    gl.disable(gl.BLEND);
+
+    /* --- grade, to the screen --- */
+    pass(pPost, null, cw, ch); u = pPost.u;
+    tex(0, scene.t, u.uScene); tex(1, mips[0].t, u.uBloom); tex(2, stA.t, u.uStreak); tex(3, logoTex, u.uLogo);
+    gl.uniform2f(u.uRes, cw, ch);
+    gl.uniform3f(u.uBH, S.cx*dpr, (vh - S.cy)*dpr, S.R*dpr);
+    var lw = S.R * .88 * (1 + .025*Math.sin(tSec*1.1)) * logoPad * dpr;
+    gl.uniform4f(u.uLg, S.cx*dpr, (vh - S.cy - Math.sin(tSec*.9)*S.R*.015)*dpr, lw, lw*logoAsp);
+    for(i=0;i<4;i++){
+      var pu = S.pulses[S.pulses.length - 1 - i];
+      pz[i*2] = pu ? pu.r*dpr : -9999; pz[i*2+1] = pu ? Math.min(1.2, pu.a) : 0;
+    }
+    gl.uniform2fv(u.uPulse, pz);
+    gl.uniform1f(u.uTime, tSec); gl.uniform1f(u.uVel, S.vel);
+    gl.uniform1f(u.uBoot, S.boot); gl.uniform1f(u.uArc, S.arc);
+    gl.uniform1f(u.uLogoA, S.logoA); gl.uniform1f(u.uFade, S.fade); gl.uniform1f(u.uDpr, dpr);
+    tri();
+
+    /* --- foreground stars, straight onto the graded frame --- */
+    gl.enable(gl.BLEND);
+    gl.useProgram(pStar.p); u = pStar.u;
+    gl.bindVertexArray(starVAO);
+    gl.uniform2f(u.uRes, vw, vh); gl.uniform2f(u.uM, S.mx, S.my);
+    gl.uniform3f(u.uBH, S.cx, S.cy, S.R);
+    gl.uniform1f(u.uZ, starZ % 1); gl.uniform1f(u.uSpeed, (0.0016 + S.vel*0.012) * 1.4);
+    gl.uniform1f(u.uTime, tSec);
+    gl.drawArraysInstanced(gl.TRIANGLE_STRIP, 0, 4, SN);
+    gl.bindVertexArray(null);
+    gl.disable(gl.BLEND);
+  }
+
+  el.addEventListener("webglcontextlost", function(e){ e.preventDefault(); if(cineLost) cineLost(); });
+  return { draw:draw, resize:resize, setLogo:setLogo, lite:lite,
+           get info(){ return { scale:scale, max:maxScale, min:minScale, ms:gAvg, w:scene.w, h:scene.h, dpr:dpr }; } };
+}
+try { cine = initCine(); } catch(e){ cine = null; if(window.console) console.warn("film: falling back to 2D —", e.message); }
+if(cine){
+  document.documentElement.classList.add("gl");
+  window.addEventListener("resize", function(){ if(cine) cine.resize(); });
+  window.__film = cine;
+}
+
 /* ============ starfield ============ */
 var canvas = document.getElementById("stars");
 var ctx = canvas.getContext("2d");
 var W, H, DPR, stars = [], N = smallScreen ? 150 : 260;
 var velocity = 0, targetVel = 0, lastY = window.scrollY;
-var mx = 0, my = 0;
+var mx = 0, my = 0, mxp = 0, myp = 0, curSeen = false, curA = 0;
 
 function sizeCanvas(){
   DPR = Math.min(window.devicePixelRatio || 1, smallScreen ? 1.25 : 1.5);
   W = window.innerWidth; H = window.innerHeight;
+  if(cine){ canvas.width = canvas.height = 1; return; }   /* the film owns the sky; keep no second backing store */
   canvas.width = W * DPR; canvas.height = H * DPR;
   canvas.style.width = W + "px"; canvas.style.height = H + "px";
   ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
@@ -919,6 +1528,7 @@ document.addEventListener("visibilitychange", function(){ hidden = document.hidd
 var starsFrame = null, wellFrame = null, curFrame = null;
 
 function drawStatic(){
+  if(cine) return;
   ctx.clearRect(0,0,W,H);
   var cx = W/2, cy = H/2, tE = bh.R*1.9;
   stars.forEach(function(s){
@@ -944,6 +1554,7 @@ if(reduced){
   if(finePointer){
     window.addEventListener("mousemove", function(e){
       mx = (e.clientX / W - .5); my = (e.clientY / H - .5);
+      mxp = e.clientX; myp = e.clientY; curSeen = true;
     }, {passive:true});
   }
   var t = 0;
@@ -951,6 +1562,7 @@ if(reduced){
     t += 0.016;
     velocity += (targetVel - velocity) * 0.06;
     targetVel *= 0.92;
+    if(cine) return;                    /* the film draws its own stars */
     ctx.clearRect(0,0,W,H);
     var cx = W/2 - mx*30, cy = H/2 - my*30;
     var speed = 0.0016 + velocity * 0.012;
@@ -1041,11 +1653,15 @@ onScrollHud();
 /* dot nav active state */
 var dotLinks = Array.prototype.slice.call(document.querySelectorAll(".dots a"));
 var sections = dotLinks.map(function(a){ return document.querySelector(a.getAttribute("href")); });
+var navIdx = -1;
 var navIO = new IntersectionObserver(function(entries){
   entries.forEach(function(en){
     if(en.isIntersecting){
       var idx = sections.indexOf(en.target);
       dotLinks.forEach(function(d,i){ d.classList.toggle("on", i===idx); });
+      /* every chapter opens on a transmission */
+      if(cine && !reduced && idx !== navIdx && navIdx >= 0 && Array.isArray(pulses) && pulses.length < 4) pulses.push({ r: bh.R*1.05, a: 0.85 });
+      navIdx = idx;
     }
   });
 },{rootMargin:"-45% 0px -45% 0px"});
@@ -1529,6 +2145,7 @@ if(orrOn){
 var relic = document.getElementById("relic");
 var rctx = relic.getContext("2d");
 function sizeRelic(){
+  if(cine){ relic.width = relic.height = 1; return; }
   relic.width = W * DPR; relic.height = H * DPR;
   relic.style.width = W + "px"; relic.style.height = H + "px";
   rctx.setTransform(DPR, 0, 0, DPR, 0, 0);
@@ -1581,7 +2198,7 @@ function glowFor(lw, lh, R){
   _glow = c; _glowK = key;
   return c;
 }
-logoImg.onload = function(){ logoOK = true; if(reduced) staticWell(); };
+logoImg.onload = function(){ logoOK = true; if(cine) cine.setLogo(logoImg); if(reduced) staticWell(); };
 logoImg.src = "assets/logo-512.webp";
 
 /* Both of these gradients are rebuilt only when the value that shapes them
@@ -1795,35 +2412,130 @@ function warpContent(){
       el.style.textShadow = wantChrom
         ? (-ux*2).toFixed(1)+"px "+(-uy*2).toFixed(1)+"px 0 rgba(201,92,255,.24), "
           +(ux*2).toFixed(1)+"px "+(uy*2).toFixed(1)+"px 0 rgba(92,140,255,.24)"
+          +(cine ? ", 0 0 14px rgba(3,4,9,.85)" : "")
         : "";
     }
   }
 }
 
+/* ============ exposure dodge — the well dims as words cross it ============
+   A ray-traced disk is bright enough to bury body copy. Rather than park the
+   hole somewhere safe, the film pulls its own exposure down whenever a block
+   of text passes over the shadow or the bright limb, and lets it flare back
+   up in the gaps — so the picture breathes with the reading rhythm.
+   The opening and closing shots are composed by hand and take no part. */
+var readers = [], readersDirty = true;
+if(cine){
+  document.querySelectorAll('#drift .wr,#drift .m-copy,#nebula .wr,#nebula .force,#constellation .con-head').forEach(function(el){
+    readers.push({ el:el, x0:0, x1:0, y0:0, y1:0, side:0, steer:!!el.closest('#drift') });
+  });
+  window.addEventListener('resize', function(){ readersDirty = true; });
+  window.addEventListener('load', function(){ readersDirty = true; });
+}
+function measureReaders(){
+  var sy = window.scrollY, rg = document.createRange();
+  for(var i=0;i<readers.length;i++){
+    var q = readers[i];
+    /* the ink, not the box: a heading with max-width:20ch is far wider
+       than the words actually set inside it */
+    rg.selectNodeContents(q.el);
+    var r = rg.getBoundingClientRect();
+    if(!r.width) r = q.el.getBoundingClientRect();
+    q.x0 = r.left; q.x1 = r.right; q.y0 = r.top + sy; q.y1 = r.bottom + sy;
+    q.side = !q.steer ? 0 : (r.right < W*0.64 ? -1 : (r.left > W*0.36 ? 1 : 0));
+  }
+  readersDirty = false;
+}
+/* which side of the frame the words in view are on: -1 left, +1 right */
+function textSide(){
+  var sy = window.scrollY, s = 0;
+  for(var i=0;i<readers.length;i++){
+    var q = readers[i];
+    if(!q.side) continue;
+    var w = 1 - Math.abs((q.y0 + q.y1)/2 - sy - H*0.5) / (H*0.7);
+    if(w > 0) s += q.side*w;
+  }
+  return s > 1 ? 1 : (s < -1 ? -1 : s);
+}
+function sm01(v){ v = v < 0 ? 0 : (v > 1 ? 1 : v); return v*v*(3 - 2*v); }
+function crowdAt(px, py, rad){
+  var sy = window.scrollY, best = 0;
+  for(var i=0;i<readers.length;i++){
+    var q = readers[i];
+    var dx = px < q.x0 ? q.x0 - px : (px > q.x1 ? px - q.x1 : 0);
+    var y0 = q.y0 - sy, y1 = q.y1 - sy;
+    var dy = py < y0 ? y0 - py : (py > y1 ? py - y1 : 0);
+    var c = 1 - Math.sqrt(dx*dx + dy*dy)/rad;
+    if(c > best) best = c;
+  }
+  return best;
+}
+
 /* choreography */
-var conStartY = 0, conEndY = 0, pageMax = 1;
+var conStartY = 0, conEndY = 0, pageMax = 1, nebTop = 0, conTop = 0, voTop = 0, siTop = 0;
 function cacheRelicBounds(){
   var r = conWrap.getBoundingClientRect();
   conStartY = r.top + window.scrollY - window.innerHeight*0.6;
   conEndY   = r.top + window.scrollY + conWrap.offsetHeight - window.innerHeight*0.4;
   pageMax = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+  var top = function(id){ var e = document.getElementById(id); return e ? e.getBoundingClientRect().top + window.scrollY : 0; };
+  nebTop = top('nebula'); conTop = top('constellation'); voTop = top('voices'); siTop = top('signal');
 }
 cacheRelicBounds();
 window.addEventListener("resize", cacheRelicBounds);
 window.addEventListener("load", cacheRelicBounds);
 
+/* what the film is told each frame: where the well sits, how the camera is
+   posed around it, and how the plate is graded */
+function hexRGB(h){
+  h = String(h || "").replace("#", "");
+  if(h.length === 3) h = h[0]+h[0]+h[1]+h[1]+h[2]+h[2];
+  var n = parseInt(h, 16);
+  if(isNaN(n)) return [.486, .361, 1];
+  return [((n>>16)&255)/255, ((n>>8)&255)/255, (n&255)/255];
+}
+var FILM = { cx:0, cy:0, R:1, tilt:.3, rot:0, ga:1, spd:1, vel:0, mx:0, my:0, mxp:0, myp:0, curA:0,
+             yaw:.9, pitch:.25, neb:1, tint:[.486,.361,1], tintA:0, pulses:pulses,
+             boot:0, arc:0, logoA:1, fade:1, still:false, dt:1 };
+if(cine) cine.state = FILM;   /* readable from the console, like __orrery */
+function stepPulses(dt){
+  for(var k=pulses.length-1;k>=0;k--){
+    var pu = pulses[k];
+    pu.r += (1.8 + pu.r*0.022)*dt;
+    pu.a *= Math.pow(0.985, dt);
+    if(pu.a < 0.02 || pu.r > Math.max(W,H)*1.2) pulses.splice(k,1);
+  }
+}
+
 function staticWell(){
   bh.x = W/2; bh.y = H*0.52; bh.R = Math.min(W,H)*0.16;
+  if(cine){
+    /* reduced motion: one still frame of the same film, quieter so the
+       page can pass over it */
+    FILM.cx = bh.x; FILM.cy = bh.y; FILM.R = bh.R; FILM.tilt = .3; FILM.rot = -.22;
+    FILM.ga = .3; FILM.neb = .9; FILM.logoA = .6; FILM.fade = 1; FILM.still = true;
+    cine.draw(FILM, 0);
+    return;
+  }
   drawWell(0.7, 0.4, -0.22, W/2, H*0.52, Math.min(W,H)*0.16, 1, 0);
   drawStatic();
 }
+/* the film can be taken away mid-flight — a lost context, or a GPU the
+   governor gave up on — and the 2D renderer picks the scene up where it was */
+cineLost = function(){
+  if(!cine) return;
+  cine = null;
+  document.documentElement.classList.remove("gl");
+  sizeCanvas(); initStars(); sizeRelic();
+  if(reduced) staticWell();
+};
 if(reduced){
   staticWell();
   window.addEventListener("resize", staticWell);
 } else {
-  var rT = 0, rGa = 0.85, rFrame = 0;
+  var rT = 0, rGa = 0.85, rFrame = 0, filmT0 = 0, steer = 1, steerT = 1, filmDt = 0, filmLast = 0;
   wellFrame = function(){
-    rT += 0.016; rFrame++;
+    rT += 0.016*fdt; rFrame++;
     if(rFrame % 90 === 0) pageMax = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
     var yNow = window.scrollY;
     var p = Math.min(1, yNow / pageMax);
@@ -1835,6 +2547,50 @@ if(reduced){
     var R    = Math.min(W,H)*(smallScreen ? 0.165 + p*0.12 : 0.115 + p*0.10);  /* the well grows as you approach */
     var cx = W*0.5 + Math.sin(p*6.283)*W*0.16 - mx*26;
     var cy = H*0.52 + Math.cos(p*6.283)*H*0.045 - my*26;
+    if(cine && W >= 1000){
+      /* the opening shot: type on the left third, the well on the right.
+         It lets go of that mark as the descent begins. */
+      var hk = Math.min(1, yNow / (H*0.9)); hk = 1 - hk*hk*(3 - 2*hk);
+      cx += W*0.24*hk; cy += H*0.05*hk; R *= 1 + 0.25*hk; rot += 0.16*hk;
+    } else if(cine){
+      /* narrow screens: the type owns the top of the frame, so the well
+         opens low, rising out of the bottom edge */
+      var hm = Math.min(1, yNow / (H*0.9)); hm = 1 - hm*hm*(3 - 2*hm);
+      cy += H*0.35*hm; rot += 0.1*hm;
+    }
+    var nb = 0;
+    if(cine){
+      if(readersDirty) measureReaders();
+      /* The Drift: the well keeps to whichever side the words are not on,
+         and holds its side while a centred line goes by. */
+      var dz = sm01((yNow - H*0.55)/(H*0.5)) * (1 - sm01((yNow - (nebTop - H*0.9))/(H*0.5)));
+      if(dz > 0){
+        var ts = textSide();
+        if(Math.abs(ts) > 0.15) steerT = ts > 0 ? -1 : 1;
+        steer += (steerT - steer)*0.03*fdt;
+        /* on a phone every line runs the full measure: there is no free
+           side, so the well stands half out of frame on the right */
+        cx += (W*0.5 + steer*W*(W >= 1000 ? 0.23 : 0.31) - mx*26 - cx)*dz;
+      }
+      /* Nebula of Craft: the camera turns off the hole and into the cloud.
+         The disk is left as a rim of light at the edge of frame. */
+      nb = sm01((yNow - (nebTop - H*0.75))/(H*0.8)) * (1 - sm01((yNow - (conTop - H*0.95))/(H*0.7)));
+      cx += (W*1.25 - cx)*nb;
+      /* Voices, then Signal: the camera falls toward the horizon. The shadow
+         rises from the bottom of the frame, the lensed arc a band of light
+         along it, and the last words sit above that line. */
+      var Rs = Math.min(W*0.46, H*0.38), Rv = Rs*0.62;
+      var s1 = sm01((yNow - (voTop - H*0.95))/(H*0.85));
+      var s2 = sm01((yNow - (siTop - H*0.85))/Math.max(1, pageMax - (siTop - H*0.85)));
+      if(s1 > 0){
+        var tR = Rv + (Rs - Rv)*s2, tY = H*(W >= 1000 ? 0.88 + 0.02*s2 : 0.88 - 0.05*s2) + 1.55*tR;
+        cx += (W*0.5 - mx*26 - cx)*s1;
+        cy += (tY - my*14 - cy)*s1;
+        R  += (tR - R)*s1;
+        tilt += (0.2 - tilt)*s1;
+        rot  += (0 - rot)*s1;
+      }
+    }
     /* boot: the singularity forms small and violent, then eases into
        its hero orbit — one object, never leaving the screen */
     var arcA = 0;
@@ -1853,14 +2609,56 @@ if(reduced){
       arcA = 1 - tr;
       if(!bootActive && tr >= 1) heroT0 = 0;
     }
-    for(var i=0;i<AP.length;i++) AP[i].th += AP[i].w * speedMul;
-    pulseClock++;
+    if(!cine) for(var i=0;i<AP.length;i++) AP[i].th += AP[i].w * speedMul;
+    pulseClock += fdt;      /* in 60Hz frames, so a 240Hz panel does not pulse four times as often */
     if(pulseClock > 300 || (velocity > 1.0 && pulseClock > 90)){
       pulses.push({ r: R*1.1, a: 1 });
       pulseClock = 0;
     }
+    var inCon = yNow > conStartY && yNow < conEndY;
+    if(cine && !bootActive && !heroT0){
+      if(readersDirty) measureReaders();
+      /* two probes: the shadow itself, and the Doppler-bright limb */
+      var lx = cx + Math.cos(rot)*R*1.9, ly = cy + Math.sin(rot)*R*1.9;
+      var crowd = Math.max(crowdAt(cx, cy, R*1.7), crowdAt(lx, ly, R*1.3));
+      gaT = inCon ? 0.3 : 0.92 * (1 - 0.72*Math.min(1, crowd*1.5));
+    }
     rGa += (gaT - rGa)*0.05;
     bh.x = cx; bh.y = cy; bh.R = R;   /* feed the starfield lens */
+    if(cine){
+      stepPulses(fdt);
+      /* inside the constellation the whole sky leans toward the accent of
+         whichever world is at the front */
+      var tw = (inCon && oLive >= 0 && WORLDS[oLive]) ? hexRGB(WORLDS[oLive].pal[1]) : FILM.tint;
+      FILM.tint[0] += (tw[0] - FILM.tint[0])*0.06;
+      FILM.tint[1] += (tw[1] - FILM.tint[1])*0.06;
+      FILM.tint[2] += (tw[2] - FILM.tint[2])*0.06;
+      FILM.tintA += ((inCon ? 1 : 0) - FILM.tintA)*0.04;
+      FILM.neb += ((inCon ? 0.7 : 1 + nb*0.9) - FILM.neb)*0.04;
+      curA += ((curSeen ? 1 : 0) - curA)*0.05;
+      if(!filmT0) filmT0 = performance.now();
+      var fd = Math.min(1, (performance.now() - filmT0)/1500);
+      FILM.cx = cx; FILM.cy = cy; FILM.R = R; FILM.tilt = tilt; FILM.rot = rot;
+      FILM.ga = rGa; FILM.spd = speedMul; FILM.vel = velocity;
+      FILM.mx = mx; FILM.my = my; FILM.mxp = mxp; FILM.myp = myp; FILM.curA = curA;
+      /* the camera pans across the galaxy as the page descends */
+      FILM.yaw = 0.9 + p*1.7 + rT*0.004 + mx*0.03;
+      FILM.pitch = 0.25 - p*0.6 + my*0.03;
+      FILM.boot = bootP; FILM.arc = arcA;
+      FILM.logoA = Math.min(1, rGa*1.1); FILM.fade = fd*fd*(3 - 2*fd); FILM.still = false;
+      /* The page keeps the panel's full rate; the film does not need to.
+         Tracing 240 frames a second buys nothing the eye can use and costs
+         a laptop its fans, so it is held to roughly 60–90. And behind the
+         world viewer's scrim it is not drawn at all. */
+      var fnow = performance.now();
+      filmDt += fdt;
+      if(fnow - filmLast >= 10.5 && !document.body.classList.contains("viewing")){
+        FILM.dt = Math.min(4, filmDt); filmDt = 0; filmLast = fnow;
+        cine.draw(FILM, fnow);
+      }
+      warpContent();
+      return;
+    }
     drawWell(rGa, tilt, rot, cx, cy, R, speedMul, 1);
     if(arcA > 0){
       /* progress arc sweeping the photon ring */
@@ -1926,14 +2724,96 @@ if(finePointer && !reduced){
   document.body.classList.remove("has-cursor");
 }
 
+/* ============ sound — the room tone of the well ============
+   Nothing is downloaded: a low fifth, each voice doubled and detuned so it
+   beats slowly, under filtered noise that opens up with scroll speed. It is
+   built on the first press and suspended whenever it is off or the tab is. */
+var sndBtn = document.getElementById("sndBtn"), snd = null, sndOn = false;
+function sndBuild(){
+  var AC = window.AudioContext || window.webkitAudioContext;
+  if(!AC) return null;
+  var ac = new AC(), out = ac.createGain();
+  out.gain.value = 0; out.connect(ac.destination);
+  var lp = ac.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 170; lp.Q.value = 0.8; lp.connect(out);
+  [[55,"sawtooth",.09],[55.31,"sawtooth",.09],[82.41,"sine",.10],[82.9,"triangle",.045],[110.2,"sine",.04],[27.5,"sine",.15]].forEach(function(v){
+    var o = ac.createOscillator(), g = ac.createGain();
+    o.type = v[1]; o.frequency.value = v[0]; g.gain.value = v[2];
+    o.connect(g); g.connect(lp); o.start();
+  });
+  var len = ac.sampleRate*2, buf = ac.createBuffer(1, len, ac.sampleRate), d = buf.getChannelData(0), last = 0;
+  for(var i=0;i<len;i++){ last = (last + 0.02*(Math.random()*2 - 1))/1.02; d[i] = last*3.5; }
+  var ns = ac.createBufferSource(); ns.buffer = buf; ns.loop = true;
+  var bp = ac.createBiquadFilter(); bp.type = "bandpass"; bp.frequency.value = 400; bp.Q.value = 0.5;
+  var air = ac.createGain(); air.gain.value = 0.2;
+  ns.connect(bp); bp.connect(air); air.connect(out); ns.start();
+  var lfo = ac.createOscillator(), lg = ac.createGain();
+  lfo.frequency.value = 0.07; lg.gain.value = 36; lfo.connect(lg); lg.connect(lp.frequency); lfo.start();
+  return { ac:ac, out:out, lp:lp, air:air, bp:bp };
+}
+function sndSet(on){
+  if(on && !snd){ try { snd = sndBuild(); } catch(e){ snd = null; } }
+  if(!snd) return;
+  sndOn = on;
+  var t = snd.ac.currentTime;
+  if(on) snd.ac.resume();
+  snd.out.gain.cancelScheduledValues(t);
+  snd.out.gain.setTargetAtTime(on ? 0.42 : 0, t, on ? 0.9 : 0.22);
+  if(!on) setTimeout(function(){ if(!sndOn) snd.ac.suspend(); }, 1300);
+  document.body.classList.toggle("snd-on", on);
+  sndBtn.setAttribute("aria-pressed", on ? "true" : "false");
+  document.getElementById("sndState").textContent = on ? "On" : "Off";
+}
+if(sndBtn) sndBtn.addEventListener("click", function(){ sndSet(!sndOn); });
+document.addEventListener("visibilitychange", function(){
+  if(!snd || !sndOn) return;
+  if(document.hidden) snd.ac.suspend(); else snd.ac.resume();
+});
+function sndFrame(){
+  if(!sndOn) return;
+  var t = snd.ac.currentTime;
+  snd.lp.frequency.setTargetAtTime(165 + velocity*620, t, 0.15);
+  snd.bp.frequency.setTargetAtTime(380 + velocity*900, t, 0.2);
+  snd.air.gain.setTargetAtTime(0.18 + velocity*0.85, t, 0.12);
+}
+
+/* ============ timecode — the film counts its own frames ============ */
+var hudTC = document.getElementById("hudTC"), tcT0 = 0, tcLast = -1;
+function tcFrame(now){
+  if(!hudTC || !document.body.classList.contains("ready")) return;
+  if(!tcT0) tcT0 = now;
+  var f = Math.floor((now - tcT0) * 0.024);
+  if(f === tcLast) return;
+  tcLast = f;
+  var sec = Math.floor(f/24);
+  hudTC.textContent = pad2(Math.floor(sec/3600) % 100) + ":" + pad2(Math.floor(sec/60) % 60) + ":" + pad2(sec % 60) + ":" + pad2(f % 24);
+}
+
+/* ============ magnetic calls to action ============ */
+if(finePointer && !reduced){
+  document.querySelectorAll(".btn").forEach(function(b){
+    b.addEventListener("mousemove", function(e){
+      var r = b.getBoundingClientRect();
+      b.style.transform = "translate(" + ((e.clientX - r.left - r.width/2)*0.2).toFixed(1) + "px," +
+                                         ((e.clientY - r.top - r.height/2)*0.32).toFixed(1) + "px)";
+    });
+    b.addEventListener("mouseleave", function(){ b.style.transform = ""; });
+  });
+}
+
 /* ============ the one ticker ============ */
+var lastNow = 0;
 (function frame(now){
   requestAnimationFrame(frame);
-  if(hidden) return;
+  if(hidden){ lastNow = 0; return; }
+  /* how many 60Hz frames this one was worth — so the film runs at the same
+     speed on a 120Hz panel as on a 60Hz one */
+  fdt = lastNow ? Math.min(3, Math.max(.1, (now - lastNow)/16.667)) : 1;
+  lastNow = now;
   if(starsFrame) starsFrame();
   if(wellFrame)  wellFrame();
   if(curFrame)   curFrame();
   orrTick(now);
+  if(!reduced){ tcFrame(now); sndFrame(); }
 })(performance.now());
 
 })();
