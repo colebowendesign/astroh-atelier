@@ -131,7 +131,7 @@ body.ready .hud{opacity:1}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
 .hud-right{display:flex;align-items:center;gap:clamp(14px,2.4vw,30px)}
 .av-s{display:none}
-/* sound: off until asked for — a synthesised room tone, no file behind it */
+/* sound: off until asked for — a synthesised score, no file behind it */
 .hud-snd{display:flex;align-items:center;gap:10px;pointer-events:auto;letter-spacing:inherit;
   text-transform:inherit;color:var(--dim);transition:color .35s;padding:6px 0}
 .hud-snd:hover,.snd-on .hud-snd{color:var(--mist)}
@@ -2724,41 +2724,164 @@ if(finePointer && !reduced){
   document.body.classList.remove("has-cursor");
 }
 
-/* ============ sound — the room tone of the well ============
-   Nothing is downloaded: a low fifth, each voice doubled and detuned so it
-   beats slowly, under filtered noise that opens up with scroll speed. It is
-   built on the first press and suspended whenever it is off or the tab is. */
-var sndBtn = document.getElementById("sndBtn"), snd = null, sndOn = false;
-function sndBuild(){
-  var AC = window.AudioContext || window.webkitAudioContext;
-  if(!AC) return null;
-  var ac = new AC(), out = ac.createGain();
-  out.gain.value = 0; out.connect(ac.destination);
-  var lp = ac.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 170; lp.Q.value = 0.8; lp.connect(out);
-  [[55,"sawtooth",.09],[55.31,"sawtooth",.09],[82.41,"sine",.10],[82.9,"triangle",.045],[110.2,"sine",.04],[27.5,"sine",.15]].forEach(function(v){
-    var o = ac.createOscillator(), g = ac.createGain();
-    o.type = v[1]; o.frequency.value = v[0]; g.gain.value = v[2];
-    o.connect(g); g.connect(lp); o.start();
-  });
-  var len = ac.sampleRate*2, buf = ac.createBuffer(1, len, ac.sampleRate), d = buf.getChannelData(0), last = 0;
-  for(var i=0;i<len;i++){ last = (last + 0.02*(Math.random()*2 - 1))/1.02; d[i] = last*3.5; }
-  var ns = ac.createBufferSource(); ns.buffer = buf; ns.loop = true;
-  var bp = ac.createBiquadFilter(); bp.type = "bandpass"; bp.frequency.value = 400; bp.Q.value = 0.5;
-  var air = ac.createGain(); air.gain.value = 0.2;
-  ns.connect(bp); bp.connect(air); air.connect(out); ns.start();
-  var lfo = ac.createOscillator(), lg = ac.createGain();
-  lfo.frequency.value = 0.07; lg.gain.value = 36; lfo.connect(lg); lg.connect(lp.frequency); lfo.start();
-  return { ac:ac, out:out, lp:lp, air:air, bp:bp };
+/* ============ the score ============
+   An organ in a very large room. Nothing is downloaded and nothing is
+   looped from a file: four chords in D minor, two bars each, are played by
+   additive pipe ranks into a synthesised cathedral impulse, under a
+   repeating eighth-note figure, a slow upper line and a clock.
+
+   It is arranged by depth. At the top of the page there are only the
+   chords, the figure held back, and the line every other time round. As the
+   descent goes on the figure comes forward, the clock starts, an octave is
+   added above, and by the last section the full organ and a 32-foot pedal
+   are in. Scroll speed opens the swell box a little.
+
+   Built on the first press; suspended whenever it is off or the tab is. */
+var sndBtn = document.getElementById("sndBtn"), snd = null, sndOn = false, sndTimer = 0;
+var SC_E = 0.42, SC_VOL = 1.1;          /* one eighth note, in seconds; master level */
+/* b: pedal note · p: chord for the manuals (held two bars unless one:true)
+   o: the six eighths of the figure · m: the upper line.  MIDI note numbers. */
+var SC_BARS = [
+  { b:38, p:[50,57,62,65],    o:[62,69,74,76,74,69], m:81 },
+  { b:38, p:null,             o:[62,69,77,76,74,69], m:0  },
+  { b:34, p:[46,53,58,62,69], o:[58,65,70,72,70,65], m:77 },
+  { b:34, p:null,             o:[58,65,74,72,70,65], m:79 },
+  { b:41, p:[53,57,60,65],    o:[65,72,77,79,77,72], m:81 },
+  { b:41, p:null,             o:[65,72,81,79,77,72], m:84 },
+  { b:36, p:[48,55,60,65],    o:[60,67,72,77,72,67], m:79, one:true },
+  { b:36, p:[48,55,60,64],    o:[60,67,72,76,72,67], m:76, one:true }
+];
+function mtof(m){ return 440 * Math.pow(2, (m - 69) / 12); }
+function scBright(I){ return 900 + 4600 * I * I; }
+function scLevel(I){ return 0.5 + 0.5 * I; }      /* the swell pedal: quiet at the surface, open at the bottom */
+
+function scoreBuild(ac){
+  function wave(h){
+    var re = new Float32Array(h.length + 1), im = new Float32Array(h.length + 1);
+    for(var i=0;i<h.length;i++) im[i+1] = h[i];
+    return ac.createPeriodicWave(re, im);
+  }
+  /* a cathedral, from noise: a long tail that darkens as it dies */
+  var sr = ac.sampleRate, n = Math.floor(sr * 4.8), ir = ac.createBuffer(2, n, sr);
+  for(var ch=0; ch<2; ch++){
+    var d = ir.getChannelData(ch), lp = 0;
+    for(var i=0;i<n;i++){
+      var u = i / n, a = 0.25 + 0.70 * u;
+      lp = lp * a + (Math.random() * 2 - 1) * (1 - a);
+      d[i] = lp * Math.pow(1 - u, 2.4) * Math.min(1, i / (sr * 0.02));
+    }
+  }
+  var tk = ac.createBuffer(1, Math.floor(sr * 0.03), sr), td = tk.getChannelData(0);
+  for(var j=0;j<td.length;j++) td[j] = (Math.random() * 2 - 1) * Math.pow(1 - j / td.length, 6);
+
+  var tone = ac.createBiquadFilter(); tone.type = "lowpass"; tone.frequency.value = 1400; tone.Q.value = 0.4;
+  var lvl = ac.createGain(); lvl.gain.value = 0.4;
+  var dry = ac.createGain(); dry.gain.value = 0.5;
+  var rev = ac.createConvolver(); rev.buffer = ir;
+  var wet = ac.createGain(); wet.gain.value = 0.7;
+  var comp = ac.createDynamicsCompressor();
+  comp.threshold.value = -9; comp.knee.value = 10; comp.ratio.value = 4;   /* a ceiling, not a sound */
+  comp.attack.value = 0.02; comp.release.value = 0.5;
+  var out = ac.createGain(); out.gain.value = 0;
+  tone.connect(lvl);
+  lvl.connect(dry); dry.connect(comp);
+  lvl.connect(rev); rev.connect(wet); wet.connect(comp);
+  comp.connect(out); out.connect(ac.destination);
+  return { ac:ac, tone:tone, lvl:lvl, out:out, tick:tk, I:0.2, step:0, next:0, started:false,
+           /* the ranks: 8' diapason chorus, a flute, the full organ, the pedal */
+           pad:  wave([1, .55, .32, .28, .06, .14, 0, .08]),
+           flute:wave([1, .22, .07, .03]),
+           full: wave([1, .80, .50, .45, .15, .30, .05, .20, 0, .06]),
+           ped:  wave([1, .18, .05]) };
+}
+function scNote(sc, t, midi, dur, wave, gain, att, rel, cents){
+  var o = sc.ac.createOscillator(), g = sc.ac.createGain(), hold = Math.max(att, dur);
+  o.setPeriodicWave(wave);
+  o.frequency.value = mtof(midi);
+  if(cents) o.detune.value = cents;
+  g.gain.setValueAtTime(0, t);
+  g.gain.linearRampToValueAtTime(gain, t + att);
+  g.gain.setValueAtTime(gain, t + hold);
+  g.gain.linearRampToValueAtTime(0, t + hold + rel);
+  o.connect(g); g.connect(sc.tone);
+  o.start(t); o.stop(t + hold + rel + 0.05);
+}
+function scTick(sc, t, hi, gain){
+  var b = sc.ac.createBufferSource(), f = sc.ac.createBiquadFilter(), g = sc.ac.createGain();
+  b.buffer = sc.tick;
+  f.type = "bandpass"; f.frequency.value = hi ? 2600 : 1900; f.Q.value = 3;
+  g.gain.value = gain;
+  b.connect(f); f.connect(g); g.connect(sc.tone);
+  b.start(t);
+}
+/* write the next stretch of the score into the audio clock */
+function scoreSchedule(sc, until){
+  while(sc.next < until){
+    var st = sc.step, bar = SC_BARS[((st / 6) | 0) % 8], k = st % 6, t = sc.next, I = sc.I, i;
+    var cyc = (st / 48) | 0, top = Math.max(0, (I - 0.78) / 0.22);
+    if(k === 0){
+      if(bar.p){
+        var len = (bar.one ? 6 : 12) * SC_E, pg = 0.024 + 0.020 * I;
+        for(i=0;i<bar.p.length;i++){
+          /* two pipes a few cents apart on every note: that slow beating
+             is most of what makes it sound like an organ and not a synth */
+          scNote(sc, t, bar.p[i], len, sc.pad, pg, 1.3, 2.6, -4);
+          scNote(sc, t, bar.p[i], len, sc.pad, pg, 1.5, 2.6,  5);
+          if(top > 0) scNote(sc, t, bar.p[i] + 12, len, sc.full, 0.016 * top, 1.6, 2.4, 3);
+        }
+      }
+      scNote(sc, t, bar.b, 5.4 * SC_E, sc.ped, 0.07 + 0.07 * I, 0.5, 1.6, 0);
+      if(top > 0) scNote(sc, t, bar.b - 12, 5.4 * SC_E, sc.ped, 0.13 * top, 0.7, 1.8, 0);
+      if(bar.m && (I > 0.3 || cyc % 2 === 1)) scNote(sc, t, bar.m, 4.6 * SC_E, sc.flute, 0.034 + 0.034 * I, 0.6, 2.2, 6);
+    }
+    var acc = k === 0 ? 1 : (k === 3 ? 0.8 : 0.56);
+    scNote(sc, t, bar.o[k], 0.14, sc.flute, (0.026 + 0.064 * I) * acc, 0.012, 0.55, 0);
+    if(I > 0.6)  scNote(sc, t, bar.o[k] + 12, 0.12, sc.flute, 0.034 * ((I - 0.6) / 0.4) * acc, 0.012, 0.5, 0);
+    if(top > 0)  scNote(sc, t, bar.o[k] - 12, 0.20, sc.full,  0.030 * top * acc, 0.02, 0.6, 0);
+    if(I > 0.38 && (k === 0 || k === 3)) scTick(sc, t, k === 0, 0.22 * Math.min(1, (I - 0.38) / 0.3));
+    sc.step++; sc.next += SC_E;
+  }
+}
+/* how far down the page, as how much of the organ is playing */
+function scoreDepth(){
+  var p = Math.min(1, Math.max(0, window.scrollY / pageMax));
+  return 0.16 + 0.84 * Math.pow(p, 0.8);
+}
+function scorePump(){
+  if(!snd || !sndOn) return;
+  var now = snd.ac.currentTime;
+  snd.I += (scoreDepth() - snd.I) * 0.06;
+  snd.tone.frequency.setTargetAtTime(scBright(snd.I) + velocity * 1600, now, 0.3);
+  snd.lvl.gain.setTargetAtTime(scLevel(snd.I), now, 0.4);
+  if(snd.next < now){            /* the timer was held up: rejoin on the beat, don't bunch */
+    var miss = Math.ceil((now + 0.05 - snd.next) / SC_E);
+    snd.step += miss; snd.next += miss * SC_E;
+  }
+  scoreSchedule(snd, now + 0.6);
 }
 function sndSet(on){
-  if(on && !snd){ try { snd = sndBuild(); } catch(e){ snd = null; } }
+  if(on && !snd){
+    try {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      snd = scoreBuild(new AC());
+      snd.I = scoreDepth();
+      snd.lvl.gain.value = scLevel(snd.I);
+    } catch(e){ snd = null; }
+  }
   if(!snd) return;
   sndOn = on;
   var t = snd.ac.currentTime;
-  if(on) snd.ac.resume();
+  clearInterval(sndTimer);
+  if(on){
+    snd.ac.resume();
+    if(!snd.started){ snd.next = t + 0.12; snd.started = true; }
+    sndTimer = setInterval(scorePump, 120);
+    scorePump();
+  } else {
+    setTimeout(function(){ if(!sndOn) snd.ac.suspend(); }, 1500);
+  }
   snd.out.gain.cancelScheduledValues(t);
-  snd.out.gain.setTargetAtTime(on ? 0.42 : 0, t, on ? 0.9 : 0.22);
-  if(!on) setTimeout(function(){ if(!sndOn) snd.ac.suspend(); }, 1300);
+  snd.out.gain.setTargetAtTime(on ? SC_VOL : 0, t, on ? 0.8 : 0.25);
   document.body.classList.toggle("snd-on", on);
   sndBtn.setAttribute("aria-pressed", on ? "true" : "false");
   document.getElementById("sndState").textContent = on ? "On" : "Off";
@@ -2766,15 +2889,26 @@ function sndSet(on){
 if(sndBtn) sndBtn.addEventListener("click", function(){ sndSet(!sndOn); });
 document.addEventListener("visibilitychange", function(){
   if(!snd || !sndOn) return;
-  if(document.hidden) snd.ac.suspend(); else snd.ac.resume();
+  clearInterval(sndTimer);
+  if(document.hidden) snd.ac.suspend();
+  else { snd.ac.resume(); sndTimer = setInterval(scorePump, 120); }
 });
-function sndFrame(){
-  if(!sndOn) return;
-  var t = snd.ac.currentTime;
-  snd.lp.frequency.setTargetAtTime(165 + velocity*620, t, 0.15);
-  snd.bp.frequency.setTargetAtTime(380 + velocity*900, t, 0.2);
-  snd.air.gain.setTargetAtTime(0.18 + velocity*0.85, t, 0.12);
-}
+/* The score cannot be checked by eye, so it can be rendered offline and
+   measured: __score.probe(seconds, depth 0–1) resolves to peak and RMS. */
+window.__score = {
+  probe: function(sec, I){
+    var OC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+    var oc = new OC(2, Math.floor(44100 * sec), 44100), sc = scoreBuild(oc);
+    sc.I = I; sc.next = 0.1; sc.out.gain.value = SC_VOL; sc.tone.frequency.value = scBright(I); sc.lvl.gain.value = scLevel(I);
+    scoreSchedule(sc, sec);
+    return oc.startRendering().then(function(buf){
+      var d = buf.getChannelData(0), from = Math.floor(44100 * Math.min(4, sec / 3)), pk = 0, sq = 0;
+      for(var i=from;i<d.length;i++){ var v = d[i] < 0 ? -d[i] : d[i]; if(v > pk) pk = v; sq += v * v; }
+      return { peak: +pk.toFixed(3), rms: +Math.sqrt(sq / (d.length - from)).toFixed(4),
+               rmsDb: +(20 * Math.log10(Math.sqrt(sq / (d.length - from)) || 1e-9)).toFixed(1) };
+    });
+  }
+};
 
 /* ============ timecode — the film counts its own frames ============ */
 var hudTC = document.getElementById("hudTC"), tcT0 = 0, tcLast = -1;
@@ -2813,7 +2947,7 @@ var lastNow = 0;
   if(wellFrame)  wellFrame();
   if(curFrame)   curFrame();
   orrTick(now);
-  if(!reduced){ tcFrame(now); sndFrame(); }
+  if(!reduced) tcFrame(now);
 })(performance.now());
 
 })();
